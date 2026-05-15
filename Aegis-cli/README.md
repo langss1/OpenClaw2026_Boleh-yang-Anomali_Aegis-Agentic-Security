@@ -16,7 +16,7 @@ If you are an AI assistant working on this project, you **MUST** adhere to the f
 ### 💻 Source Code (`/src`)
 - **[/cli](./src/cli)**: Entry point for the unified Aegis terminal interface.
 - **[/core](./src/core)**: Core logic, base classes, and orchestrator.
-- **[/modules](./src/modules)**: The 5 core products (Security, Testing, Pentest, Dev, Ask).
+- **[/modules](./src/modules)**: The 4 core products — **SecurityCode** (SAST), **QA** (auto-remediation), **LocalPentest** (DAST/OWASP Top-10), **Ask** (AI security chat).
 - **[/agents](./src/agents)**: Reusable AI agents (Recon, Security, Patch, etc.).
 
 ### 📖 Documentation (`/docs`)

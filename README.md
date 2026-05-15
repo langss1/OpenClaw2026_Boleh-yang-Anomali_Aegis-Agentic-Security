@@ -16,8 +16,9 @@ If you are an AI assistant working on this project, you **MUST** adhere to the f
 ### 💻 Source Code (`/src`)
 - **[/cli](./src/cli)**: Entry point for the unified Aegis terminal interface.
 - **[/core](./src/core)**: Core logic, base classes, and orchestrator.
-- **[/modules](./src/modules)**: The 5 core products (Security, Testing, Pentest, Dev, Ask).
-- **[/agents](./src/agents)**: Reusable AI agents (Recon, Security, Patch, etc.).
+- **[/modules](./src/modules)**: The 4 core products — **SecurityCode** (SAST), **QA** (auto-remediation), **LocalPentest** (DAST/OWASP), **Ask** (AI chat).
+- **[/agents](./src/agents)**: Reusable AI agents (Recon, Security, Patch, Ask, Quality).
+- **[/openclaw](./openclaw)**: OpenClaw-native agents & skills (Pentest, QA, SecurityCode).
 
 ### 📖 Documentation (`/docs`)
 - [**Plan.md**](./plan.md) - Project roadmap & architecture.
@@ -42,10 +43,15 @@ Setelah itu langsung bisa dipanggil dari direktori manapun:
 
 ```bash
 aegis help                                    # menu bantuan
+aegis SecurityCode                            # SAST scan project (secret, injection patterns)
+aegis QA                                      # auto-fix kualitas kode (interactive review)
+aegis LocalPentest                            # wizard DAST OWASP Top-10 (Aegis Pentest engine)
+aegis LocalPentest -t http://localhost:8080 -y --profile deep
+aegis Ask "bagaimana cara mencegah SQL injection?"
+aegis autopilot                               # full pipeline (Recon → SecurityCode → LocalPentest → Patch)
 aegis list                                    # daftar agent OpenClaw
 aegis run --agent pentest --task "scan http://localhost:3000 untuk SQLi"
 aegis run --agent qa --task "perbaiki kode di . secara aman"
-aegis autopilot                               # full pipeline (SecurityCode → QA → Pentest)
 ```
 
 > Butuh **Node.js 18+**. Kalau `EACCES` saat install, set npm prefix ke home:
