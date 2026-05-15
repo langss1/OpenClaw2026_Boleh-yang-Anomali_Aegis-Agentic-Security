@@ -1,0 +1,71 @@
+.section {
+  position: relative;
+  padding: 100px 0;
+  background: #030000;
+  overflow: hidden;
+}
+
+.scrollWrapper {
+  width: 100vw;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  margin-bottom: 60px;
+  background: rgba(255, 255, 255, 0.01);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ribbonRow {
+  display: flex;
+  gap: 80px;
+  padding: 0 100px;
+  width: max-content;
+  align-items: center;
+}
+
+.iconCircle {
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.iconCircle:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 0, 0, 0.2);
+}
+
+.textContainer {
+  max-width: 1600px;
+  margin: 0 auto;
+  text-align: left;
+  width: 100%;
+  padding: 0 80px;
+}
+
+.titleText {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
+}
+
+.paragraphText {
+  font-family: var(--font-poppins), sans-serif;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.7;
+  letter-spacing: 0.2px;
+  font-weight: 400;
+}

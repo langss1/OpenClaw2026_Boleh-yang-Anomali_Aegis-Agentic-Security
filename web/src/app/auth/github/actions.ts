@@ -3,6 +3,7 @@ import { createClient } from '@/utils/supabase/server'
 
 export async function getGitHubRepos() {
   const supabase = await createClient()
+  if (!supabase) return { error: 'Supabase not configured' }
   const { data: { session } } = await supabase.auth.getSession()
 
   const isDev = process.env.NODE_ENV === 'development'
@@ -60,6 +61,7 @@ export async function getGitHubRepos() {
 
 export async function analyzeGitHubRepo(repoFullName: string) {
   const supabase = await createClient()
+  if (!supabase) return { stack: [], error: 'Supabase not configured' }
   const { data: { session } } = await supabase.auth.getSession()
   
   const isDev = process.env.NODE_ENV === 'development'

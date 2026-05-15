@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
-import { DEV_USER_COOKIE } from '@/lib/devAuth';
+import { getClientAuthUser, type AuthUser } from '@/lib/auth';
+import { signOut } from '@/app/auth/actions';
 import styles from './pricing.module.css';
 
 interface Plan {
@@ -21,38 +21,20 @@ function fmtIdr(n: number): string {
   return `Rp ${n.toLocaleString('id-ID')}`;
 }
 
-function readDevUserIdFromCookie(): string | null {
-  if (typeof document === 'undefined') return null;
-  const m = document.cookie.match(new RegExp(`(?:^|; )${DEV_USER_COOKIE}=([^;]*)`));
-  return m ? decodeURIComponent(m[1]) : null;
-}
-
 function PricingContent() {
   const searchParams = useSearchParams();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [status, setStatus] = useState('');
   const [busyPlanId, setBusyPlanId] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const [authReady, setAuthReady] = useState(false);
 
   const devSimulate = process.env.NEXT_PUBLIC_DEV_PAYMENT_SIM === 'true';
   const devAuthSim = process.env.NEXT_PUBLIC_DEV_AUTH_SIM === 'true';
 
   const resolveUser = useCallback(async () => {
-    const supabase = createClient();
-    if (supabase) {
-      try {
-        const { data } = await supabase.auth.getUser();
-        if (data.user?.id) {
-          setUserId(data.user.id);
-          return;
-        }
-      } catch {
-        /* ignore */
-      }
-    }
-    const devId = readDevUserIdFromCookie();
-    if (devId) setUserId(devId);
+    const user = await getClientAuthUser();
+    setAuthUser(user);
   }, []);
 
   useEffect(() => {
@@ -83,7 +65,7 @@ function PricingContent() {
     resolveUser().finally(() => setAuthReady(true));
   }, [resolveUser]);
 
-  const effectiveUserId = userId || (devSimulate ? 'dev-user' : null);
+  const effectiveUserId = authUser?.id || (devSimulate ? 'dev-user' : null);
 
   const simulatePay = async (planId: string) => {
     if (!effectiveUserId) {
@@ -178,6 +160,27 @@ function PricingContent() {
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)' }}>
             License CLI — aktivasi via Midtrans sandbox.
           </p>
+          {authReady && authUser && (
+            <p style={{ fontSize: 12, color: 'rgba(34,197,94,0.8)', marginTop: 10 }}>
+              Masuk sebagai: <code style={{ color: '#86efac' }}>{authUser.email || authUser.id}</code>
+              {authUser.source === 'dev' && ' (dev)'}
+              {' · '}
+              <button
+                type="button"
+                onClick={() => signOut()}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#fca5a5',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  fontSize: 12,
+                }}
+              >
+                Keluar
+              </button>
+            </p>
+          )}
           {authReady && !effectiveUserId && (
             <p style={{ fontSize: 13, color: '#fbbf24', marginTop: 12 }}>
               <Link href="/login?next=/pricing" style={{ color: '#fca5a5' }}>
@@ -193,11 +196,6 @@ function PricingContent() {
                   </Link>
                 </>
               )}
-            </p>
-          )}
-          {effectiveUserId && (
-            <p style={{ fontSize: 12, color: 'rgba(34,197,94,0.8)', marginTop: 10 }}>
-              Masuk sebagai: <code style={{ color: '#86efac' }}>{effectiveUserId}</code>
             </p>
           )}
         </div>

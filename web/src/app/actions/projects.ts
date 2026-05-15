@@ -26,6 +26,7 @@ export async function createProject(formData: {
 }) {
   try {
     const supabase = await createClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return { success: false, error: 'Unauthorized' }
@@ -58,6 +59,7 @@ export async function createProject(formData: {
 
 export async function deleteProject(id: string) {
   const supabase = await createClient()
+  if (!supabase) return
   const { error } = await supabase
     .from('projects')
     .delete()
@@ -105,6 +107,7 @@ export async function getDashboardStats() {
 
 export async function getRecentRuns() {
   const supabase = await createClient()
+  if (!supabase) return []
   const { data, error } = await supabase
     .from('security_runs')
     .select('*, projects(name)')
@@ -120,6 +123,7 @@ export async function getRecentRuns() {
 
 export async function getReports() {
   const supabase = await createClient()
+  if (!supabase) return []
   const { data, error } = await supabase
     .from('security_runs')
     .select('*, projects(name)')

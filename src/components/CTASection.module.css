@@ -1,0 +1,244 @@
+.section {
+  position: relative;
+  padding: 160px 0;
+  background: #030000;
+  overflow: hidden;
+}
+
+.dotBg {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.bgGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.wrapper {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 80px 40px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 48px;
+  text-align: center;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  font-family: var(--font-poppins);
+  font-size: 13px;
+  color: #ff0000;
+  margin-bottom: 32px;
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  background: #ff0000;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ff0000;
+}
+
+.title {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.desc {
+  font-family: var(--font-poppins);
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 600px;
+  margin: 0 auto 48px;
+  line-height: 1.6;
+}
+
+.miniStats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.miniStat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.miniVal {
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.miniLabel {
+  font-family: var(--font-poppins);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.form {
+  display: flex;
+  gap: 16px;
+  max-width: 500px;
+  margin: 0 auto 32px;
+}
+
+.inputWrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 20px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.input {
+  width: 100%;
+  padding: 16px 20px 16px 52px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: #ffffff;
+  font-family: var(--font-poppins);
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #ff0000;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.1);
+}
+
+.submitBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 32px;
+  background: #ff0000;
+  border: none;
+  border-radius: 16px;
+  color: #ffffff;
+  font-family: var(--font-poppins);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.submitBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255, 0, 0, 0.4);
+}
+
+.successMsg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 0, 0, 0.2);
+  border-radius: 24px;
+  margin-bottom: 32px;
+}
+
+.successTitle {
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.successDesc {
+  font-family: var(--font-poppins);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-poppins);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.featureStrip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+  margin-top: 80px;
+  padding-top: 60px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.featureItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.featureItem span {
+  font-family: var(--font-poppins);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 900px) {
+  .featureStrip {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .form {
+    flex-direction: column;
+  }
+  .submitBtn {
+    padding: 16px;
+    justify-content: center;
+  }
+}

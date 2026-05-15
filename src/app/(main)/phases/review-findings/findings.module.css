@@ -1,0 +1,166 @@
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+  animation: fade-in 0.5s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.header { margin-bottom: 40px; }
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 999px;
+  color: #fbbf24;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.6;
+}
+
+.findingList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.card {
+  background: rgba(15, 3, 3, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 32px;
+}
+
+.cardHeader { margin-bottom: 24px; }
+
+.vInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.severityTag {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.severityTag[data-severity="Critical"] { color: #f87171; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); }
+.severityTag[data-severity="High"] { color: #fb923c; background: rgba(249, 115, 22, 0.1); }
+
+.vLocation { font-size: 14px; font-weight: 600; color: rgba(255, 255, 255, 0.4); }
+
+.vIssue { font-size: 18px; font-weight: 600; color: white; }
+
+.diffContainer {
+  background: #030000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.diffHeader {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #34d399;
+  text-transform: uppercase;
+}
+
+.diffBody {
+  padding: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+.diffLineOld { color: #f87171; margin-bottom: 4px; }
+.diffLineNew { color: #34d399; }
+
+.cardActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.patchBtn {
+  background: #059669;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.patchBtn:hover { background: #10b981; transform: translateY(-2px); }
+
+.ignoreBtn {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.patchApplied {
+  color: #34d399;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 0;
+}
+
+.footer {
+  text-align: center;
+  padding-bottom: 80px;
+}
+
+.continueBtn {
+  display: inline-flex;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 40px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.continueBtn:hover:not(:disabled) { background: #ef4444; transform: translateY(-2px); }
+.continueBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.footerHint {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #f87171;
+}

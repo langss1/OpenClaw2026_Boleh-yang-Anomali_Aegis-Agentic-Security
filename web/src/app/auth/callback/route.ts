@@ -1,30 +1,24 @@
-import { NextResponse } from 'next/server'
-// The client you created in Step 2
-import { createClient } from '@/utils/supabase/server'
+import { NextResponse } from 'next/server';
+import { createClient, isSupabaseConfigured } from '@/utils/supabase/server';
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get('code')
-  // if "next" is in search params, use it as the redirection URL
-  const next = searchParams.get('next') ?? '/pricing'
+  const { searchParams, origin } = new URL(request.url);
+  const code = searchParams.get('code');
+  const next = searchParams.get('next') ?? '/pricing';
 
-  if (code) {
-    const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host') // Safe to use in many environments
-      const isLocalEnv = process.env.NODE_ENV === 'development'
-      if (isLocalEnv) {
-        // we can be sure that there is no proxy in between in local env
-        return NextResponse.redirect(`${origin}${next}`)
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`)
-      } else {
-        return NextResponse.redirect(`${origin}${next}`)
-      }
-    }
+  if (!isSupabaseConfigured() || !code) {
+    return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`);
   }
 
-  // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/login?error=auth-failed`)
+  const supabase = await createClient();
+  if (!supabase) {
+    return NextResponse.redirect(`${origin}/login?error=supabase_client`);
+  }
+
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error) {
+    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error.message)}`);
+  }
+
+  return NextResponse.redirect(`${origin}${next.startsWith('/') ? next : '/pricing'}`);
 }
