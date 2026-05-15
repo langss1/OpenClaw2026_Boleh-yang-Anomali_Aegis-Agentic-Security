@@ -1,0 +1,63 @@
+{
+  "name": "SecurityCode",
+  "version": "1.0.0",
+  "title": "Aegis SecurityCode Agent",
+  "role": "SAST Analyst",
+  "description": "Agen pemindaian keamanan statis: pola injeksi, secret, XSS, traversal, SSRF, kriptografi lemah, dll. Menggunakan skill SecurityCode yang mendelegasi ke src/modules/SecurityCode (SecurityAgent). Read-only.",
+  "owner": "agent:SecurityCode",
+  "entry": "./index.js",
+  "handler": "runSecurityCodeAgent",
+  "skills": [
+    {
+      "name": "SecurityCode",
+      "path": "../../skills/SecurityCode",
+      "required": true
+    }
+  ],
+  "policies": {
+    "readOnly": true,
+    "notes": "Tidak ada patch otomatis; downstream QA hanya untuk isu category quality."
+  },
+  "ai": {
+    "enabled": false,
+    "backend": null,
+    "notes": "Deteksi rule-based; AI opsional bisa ditambahkan terpisah."
+  },
+  "io": {
+    "input": {
+      "targetDir": "string (required)",
+      "onEvent": "function (optional)"
+    },
+    "output": {
+      "runId": "string",
+      "findings": "Finding[]",
+      "reportFile": "string",
+      "logFile": "string",
+      "summary": "Record<Severity,count>"
+    }
+  },
+  "events": {
+    "start": "agent:start",
+    "finding": "agent:finding",
+    "complete": "agent:complete",
+    "error": "agent:error"
+  },
+  "messages": {
+    "errorTargetDirMissing": "[SECURITYCODE AGENT] targetDir wajib diisi.",
+    "errorTargetDirNotFound": "[SECURITYCODE AGENT] targetDir tidak ditemukan: {targetDir}"
+  },
+  "cli": {
+    "flagsWithValue": ["--target", "-t"],
+    "targetFlags": ["--target", "-t"],
+    "booleanFlags": ["--verbose", "-v"],
+    "helpLines": [
+      "                SAST — pemindaian keamanan (read-only).",
+      "                Opsi: [path] | --target|-t <path> | --dir <path> | -v",
+      "",
+      "  Contoh:",
+      "    openclaw run --agent securitycode --dir .",
+      "    openclaw run --agent securitycode --task \"scan project di cwd\""
+    ]
+  },
+  "scope": "security-sast-only"
+}

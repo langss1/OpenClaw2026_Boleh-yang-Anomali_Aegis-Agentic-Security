@@ -1,0 +1,45 @@
+{
+  "name": "SecurityCode",
+  "version": "1.0.0",
+  "title": "Aegis SecurityCode Skill",
+  "description": "Pemindaian SAST berbasis aturan (secret, injeksi, XSS, path traversal, SSRF, kripto lemah, dll.). Output laporan Markdown di logs/Security_Code/. Hanya analisis — tidak mengubah kode (remediasi QA).",
+  "module": "SecurityCode",
+  "entry": "./index.js",
+  "handler": "runSecurityCodeSkill",
+  "owner": "agent:SecurityCode",
+  "protocols": {
+    "humanInTheLoop": false,
+    "reportRequired": true,
+    "report": "logs/Security_Code/REPORT_Security_Code.md",
+    "logDir": "logs/Security_Code",
+    "logFilePrefix": "Security_Code-",
+    "logFileExtension": ".log"
+  },
+  "implementation": {
+    "modulePath": "../../../src/modules/SecurityCode",
+    "moduleHandler": "runSecurity"
+  },
+  "input": {
+    "targetDir": {
+      "type": "string",
+      "required": true,
+      "description": "Root proyek yang akan dipindai."
+    }
+  },
+  "output": {
+    "findings": "Finding[]",
+    "reportFile": "string",
+    "logFile": "string | null",
+    "summary": "object"
+  },
+  "constraints": [
+    "Tidak mengubah source code — hanya pembacaan dan laporan.",
+    "Temuan memakai category 'security' untuk chaining ke QA/Pentest sesuai pipeline."
+  ],
+  "messages": {
+    "errorTargetDirMissing": "[SECURITYCODE SKILL] \"targetDir\" wajib diisi (string).",
+    "errorTargetDirNotFound": "[SECURITYCODE SKILL] targetDir tidak ditemukan: {targetDir}",
+    "infoLogStored": "[SECURITYCODE SKILL] Log tersimpan: {logFile}"
+  },
+  "scope": "security-sast-only"
+}

@@ -173,12 +173,23 @@ async function adaptQA({ task, dir, autoConfirm, manifest }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Adapter: SecurityCode — SAST; cukup targetDir (cwd atau --dir).
+// ─────────────────────────────────────────────────────────────────────────────
+
+function adaptSecurityCode({ dir }) {
+    return {
+        targetDir: dir ? path.resolve(dir) : process.cwd(),
+    };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Registry adapter per agent
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ADAPTERS = {
     pentest: adaptPentest,
     qa: adaptQA,
+    securitycode: adaptSecurityCode,
 };
 
 async function runIntentParser({ agentId, manifest, task, target, categories, dir, autoConfirm, useAI, verbose }) {
