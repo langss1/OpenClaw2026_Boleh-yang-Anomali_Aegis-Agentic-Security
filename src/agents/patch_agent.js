@@ -7,10 +7,11 @@ class PatchAgent extends BaseAgent {
         super('Patch', targetDir);
     }
 
-    async run(findings) {
+    async run(findings, opts = {}) {
+        const reportRel = opts.reportPath || 'logs/QA/REPORT_Quality_Code.md';
         this.log('Menerapkan perbaikan yang disetujui...', '\x1b[32m');
         let healed = 0;
-        let reportContent = `# 🛡️ AEGIS QA REPORT - ${new Date().toLocaleString()}\n\n`;
+        let reportContent = `# 🛡️ AEGIS QUALITY CODE REPORT - ${new Date().toLocaleString()}\n\n`;
 
         if (findings.length === 0) return 0;
 
@@ -40,8 +41,10 @@ class PatchAgent extends BaseAgent {
             }
         }
 
-        const reportPath = path.join(this.targetDir, 'docs/REPORT_QA.md');
+        const reportPath = path.join(this.targetDir, reportRel);
+        await fs.ensureDir(path.dirname(reportPath));
         await fs.outputFile(reportPath, reportContent);
+        this.log(`Laporan: ${reportRel}`, '\x1b[90m');
         return healed;
     }
 }

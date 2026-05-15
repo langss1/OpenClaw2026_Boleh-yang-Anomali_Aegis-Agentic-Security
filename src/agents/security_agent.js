@@ -12,7 +12,9 @@ class SecurityAgent extends BaseAgent {
         this.log('Memulai pemindaian kode (SAST)...', '\x1b[33m');
         this.scan(this.targetDir);
         
-        let reportContent = `# 🔍 AEGIS SECURITY REPORT - ${new Date().toLocaleString()}\n\n`;
+        const reportRel = 'logs/Security_Code/REPORT_Security_Code.md';
+        let reportContent = `# 🔍 AEGIS SECURITY CODE REPORT - ${new Date().toLocaleString()}\n\n`;
+        reportContent += `> Fokus: kerentanan keamanan (SAST) — **bukan** kualitas/hygiene kode (gunakan QA / QualityCode).\n\n`;
         if (this.findings.length > 0) {
             this.findings.forEach(f => {
                 reportContent += `### ⚠ ${f.issue} (${f.severity})\n`;
@@ -24,15 +26,17 @@ class SecurityAgent extends BaseAgent {
             reportContent += `✅ Tidak ditemukan kerentanan keamanan kritis.\n`;
         }
 
-        const reportPath = path.join(this.targetDir, 'docs/REPORT_SecurityCode.md');
+        const reportPath = path.join(this.targetDir, reportRel);
+        await fs.ensureDir(path.dirname(reportPath));
         await fs.outputFile(reportPath, reportContent);
 
-        this.log(`Pemindaian selesai. Ditemukan ${this.findings.length} celah.`, this.findings.length > 0 ? '\x1b[31m' : '\x1b[32m');
+        this.log(`Pemindaian keamanan selesai. Ditemukan ${this.findings.length} celah.`, this.findings.length > 0 ? '\x1b[31m' : '\x1b[32m');
+        this.log(`Laporan: ${reportRel}`, '\x1b[90m');
         return this.findings;
     }
 
     scan(dir) {
-        const ignore = ['node_modules', '.git', '.next', 'dist', 'docs', 'backups', 'src'];
+        const ignore = ['node_modules', '.git', '.next', 'dist', 'docs', 'backups', 'logs', 'openclaw'];
         const items = fs.readdirSync(dir);
 
         for (const item of items) {
@@ -59,6 +63,7 @@ class SecurityAgent extends BaseAgent {
             
             if (secretMatch && valueMatch && valueMatch[1].length > 8) {
                 this.findings.push({
+                    category: 'security',
                     file: path.relative(this.targetDir, filePath),
                     line: i + 1,
                     issue: 'Hardcoded Sensitive Data',
@@ -71,6 +76,7 @@ class SecurityAgent extends BaseAgent {
 
             if (/(query|select|update|delete).*\$\{.*\}|f['"].*\{.*\}['"]/i.test(line)) {
                 this.findings.push({
+                    category: 'security',
                     file: path.relative(this.targetDir, filePath),
                     line: i + 1,
                     issue: 'SQL Injection Vulnerability',

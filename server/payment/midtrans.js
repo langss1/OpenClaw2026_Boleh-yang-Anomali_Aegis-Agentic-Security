@@ -75,6 +75,19 @@ async function verifyNotification(payload) {
     };
 }
 
+async function getTransactionStatus(orderId) {
+    const { coreApi } = ensureClient();
+    const statusResponse = await coreApi.transaction.status(orderId);
+    return {
+        orderId: statusResponse.order_id,
+        transactionStatus: statusResponse.transaction_status,
+        fraudStatus: statusResponse.fraud_status,
+        paymentType: statusResponse.payment_type,
+        grossAmount: statusResponse.gross_amount,
+        rawStatus: statusResponse,
+    };
+}
+
 function isPaid({ transactionStatus, fraudStatus }) {
     if (transactionStatus === 'capture' && fraudStatus === 'accept') return true;
     if (transactionStatus === 'settlement') return true;
@@ -84,5 +97,6 @@ function isPaid({ transactionStatus, fraudStatus }) {
 module.exports = {
     createSnapTransaction,
     verifyNotification,
+    getTransactionStatus,
     isPaid,
 };

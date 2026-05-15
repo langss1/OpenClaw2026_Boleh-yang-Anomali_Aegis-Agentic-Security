@@ -37,7 +37,11 @@ function start() {
         console.log(`  Public URL: ${cfg.publicUrl}`);
         console.log(`  Midtrans  : ${isMidtransConfigured() ? `configured (${cfg.midtrans.isProduction ? 'PRODUCTION' : 'sandbox'})` : '\x1b[33mNOT CONFIGURED\x1b[0m'}`);
         console.log(`  Plans     : ${cfg.plans.map(p => p.id).join(', ')}`);
-        console.log(`  Endpoints :`);
+        console.log(`  Web pages :`);
+        console.log(`    GET  /                          (landing)`);
+        console.log(`    GET  /pricing                   (paket berlangganan)`);
+        console.log(`    GET  /success?order_id=...      (after-payment landing)`);
+        console.log(`  API       :`);
         console.log(`    GET  /api/health`);
         console.log(`    GET  /api/plans`);
         console.log(`    GET  /api/subscription/:userId`);

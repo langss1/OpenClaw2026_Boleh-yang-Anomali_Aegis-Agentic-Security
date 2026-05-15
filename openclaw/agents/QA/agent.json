@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "title": "Aegis QA Agent",
   "role": "Auto-Fix Specialist",
-  "description": "Agen yang bertanggung jawab atas remediasi otomatis kerentanan kode. Memakai skill QA untuk eksekusi, dengan kebijakan keputusan eksplisit (human-in-the-loop atau autoConfirm). Semua aturan diambil dari manifest ini — runtime hanya menjalankan.",
+  "description": "Agen kualitas kode: kebersihan, hygiene, dan perbaikan terkontrol (bukan keamanan). Memindai via QualityCode, memperbaiki via skill QA dengan human-in-the-loop atau autoConfirm.",
   "owner": "agent:QA",
   "entry": "./index.js",
   "handler": "runQAAgent",
@@ -23,10 +23,11 @@
     },
     "safePatch": {
       "enabled": true,
-      "notes": "Aturan yang menentukan finding mana yang aman di-auto-fix saat mode 'safe-only'. Semua kondisi harus terpenuhi.",
-      "requireFixedCodePattern": "process\\.env\\.",
-      "allowedSeverities": ["Critical", "High"],
-      "denyPathPattern": "\\b(routes|api|middleware|auth)\\b"
+      "notes": "Auto-fix hanya untuk temuan kualitas berisiko rendah saat mode safe-only.",
+      "requireCategory": "quality",
+      "allowedSeverities": ["Low", "Medium"],
+      "allowedIssues": ["Trailing Whitespace", "Debug Console Statement", "Debugger Statement"],
+      "denyPathPattern": "\\b(node_modules|dist|\\.next)\\b"
     },
     "rollbackOnFailure": true,
     "respectFindingSeverity": true
@@ -37,7 +38,7 @@
     "supportedBackends": ["ollama", "openai", "deepseek", "mock"],
     "envVar": "AEGIS_AI_BACKEND",
     "systemPromptFile": "./system_prompt.md",
-    "notes": "Backend AI di-load lazily saat agent perlu menghasilkan patch atau penjelasan kontekstual. Default disabled — agent berjalan rule-based mengikuti finding dari SecurityCode."
+    "notes": "Backend AI di-load lazily untuk saran perbaikan kualitas kode. Default disabled — rule-based dari QualityCode."
   },
   "io": {
     "input": {
@@ -69,6 +70,21 @@
     "errorFindingsInvalid": "[QA AGENT] findings harus array.",
     "errorAutoConfirmInvalid": "[QA AGENT] autoConfirm tidak valid: {value}. Pilih salah satu: {modes}",
     "errorTargetDirNotFound": "[QA AGENT] targetDir tidak ditemukan: {targetDir}"
+  },
+  "cli": {
+    "flagsWithValue": ["--target", "-t", "--auto"],
+    "targetFlags": ["--target", "-t"],
+    "autoFlag": "--auto",
+    "booleanFlags": ["--verbose", "-v"],
+    "helpLines": [
+      "                Scan kualitas + perbaikan (bukan keamanan).",
+      "                Opsi: [path] | --target|-t <path> | --auto {modes} | -v",
+      "",
+      "  Contoh:",
+      "    aegis QA",
+      "    aegis QA <path>",
+      "    aegis QA --target <path> --auto safe-only -v"
+    ]
   },
   "scope": "qa-only"
 }

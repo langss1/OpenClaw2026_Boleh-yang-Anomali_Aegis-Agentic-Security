@@ -24,12 +24,11 @@ async function main() {
                 const { runSecurity } = require('../modules/SecurityCode');
                 await runSecurity(targetDir);
                 break;
-            case 'QA':
-                const { runSecurity: getFindingsQA } = require('../modules/SecurityCode');
-                const findingsT = await getFindingsQA(targetDir);
-                const { runQA } = require('../modules/QA');
-                await runQA(targetDir, findingsT);
+            case 'QA': {
+                const { runQAFromCli } = require('../../openclaw/agents/QA/cli');
+                await runQAFromCli(args.slice(1));
                 break;
+            }
             case 'LocalPentest':
                 const { runSecurity: getFindingsP } = require('../modules/SecurityCode');
                 const findingsP = await getFindingsP(targetDir);
@@ -54,11 +53,14 @@ async function main() {
                 await new Orchestrator(targetDir).runFullPipeline();
                 break;
             case 'help':
-            default:
+            default: {
+                const { getQACliHelpLines } = require('../../openclaw/agents/QA/parseArgs');
+                const qaHelp = getQACliHelpLines().map((l) => `  ${l}`).join('\n');
                 console.log(`
 \x1b[1mFITUR UTAMA (AEGIS SKILLS):\x1b[0m
-  \x1b[34mSecurityCode\x1b[0m   Cek kode yang berbahaya / rentan.
-  \x1b[32mQA\x1b[0m             Perbaiki kode otomatis (Auto-Fix).
+  \x1b[34mSecurityCode\x1b[0m   Pemindaian keamanan (SAST): secret, injection, dll.
+  \x1b[32mQA\x1b[0m             Kualitas kode: hygiene, kebersihan, auto-fix terkontrol.
+${qaHelp}
   \x1b[35mLocalPentest\x1b[0m   Simulasi serangan hacker di komputer lokal.
   \x1b[36mDevelopment\x1b[0m    Buat folder & arsitektur kode yang aman.
   \x1b[38;5;208mAsk\x1b[0m            Tanya pakar keamanan soal codingan Anda (Chat Mode).
@@ -67,6 +69,8 @@ async function main() {
 \x1b[1mAEGIS GATEWAY:\x1b[0m
   \x1b[31mautopilot\x1b[0m      Jalankan semua skill di atas secara berurutan.
                 `);
+                break;
+            }
         }
     } catch (e) {
         console.error(`\x1b[31m[ERROR]\x1b[0m ${e.message}`);
