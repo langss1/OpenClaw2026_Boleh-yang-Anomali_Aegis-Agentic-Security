@@ -1,0 +1,181 @@
+.section {
+  position: relative;
+  padding: 120px 0;
+  background: #030000;
+  overflow: hidden;
+}
+
+.dotBg {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.label {
+  font-family: var(--font-poppins);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #ff0000;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-family: var(--font-poppins);
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 32px;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  transition: all 0.4s ease;
+}
+
+.card:hover {
+  border-color: rgba(255, 0, 0, 0.3);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(255, 0, 0, 0.1);
+}
+
+.imageSection {
+  position: relative;
+  height: 240px;
+  background: radial-gradient(circle at center, rgba(255, 0, 0, 0.05) 0%, transparent 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imagePlaceholder {
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.4s ease;
+}
+
+.card:hover .imagePlaceholder {
+  border-color: #ff0000;
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+}
+
+.userIcon {
+  color: rgba(255, 255, 255, 0.2);
+  transition: all 0.4s ease;
+}
+
+.card:hover .userIcon {
+  color: #ff0000;
+}
+
+.glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, transparent 70%);
+  filter: blur(20px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card:hover .glow {
+  opacity: 1;
+}
+
+.content {
+  padding: 30px;
+}
+
+.name {
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.nameDefender {
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ff0000;
+  margin-bottom: 8px;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+.role {
+  font-family: var(--font-poppins);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 24px;
+}
+
+.achievements {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.achievementItem {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.year {
+  font-family: var(--font-poppins);
+  font-size: 11px;
+  font-weight: 700;
+  color: #ff0000;
+  padding-top: 3px;
+  white-space: nowrap;
+}
+
+.text {
+  font-family: var(--font-poppins);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+  }
+}

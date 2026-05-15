@@ -1,0 +1,144 @@
+.section {
+  padding: 100px 0 160px;
+  background: #030000;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.card {
+  position: relative;
+  background: #0a0a0a;
+  border-radius: 40px;
+  padding: 100px 60px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+}
+
+.particlesLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #ff3333;
+  border-radius: 50%;
+  filter: blur(1px) shadow(0 0 10px #ff3333);
+  box-shadow: 0 0 8px #ff3333, 0 0 12px #ff6666;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  max-width: 500px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 56px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 40px;
+  line-height: 1.1;
+  letter-spacing: -2px;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+}
+
+.btnPrimary {
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btnPrimary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+.btnSecondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btnSecondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.glowTop {
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.15) 0%, transparent 70%);
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.glowBottom {
+  position: absolute;
+  bottom: -20%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, transparent 70%);
+  filter: blur(60px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 60px 30px;
+    border-radius: 24px;
+    align-items: center;
+    text-align: center;
+  }
+  .title {
+    font-size: 36px;
+  }
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .btnPrimary, .btnSecondary {
+    width: 100%;
+    justify-content: center;
+  }
+}
