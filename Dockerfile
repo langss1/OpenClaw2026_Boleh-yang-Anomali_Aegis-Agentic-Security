@@ -21,7 +21,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production \
     HOST=0.0.0.0 \
-    PORT=3000
+    PORT=4000
 
 RUN addgroup -S aegis && adduser -S aegis -G aegis \
  && apk add --no-cache curl tini
@@ -33,7 +33,7 @@ RUN mkdir -p logs server/subscription/data \
  && chown -R aegis:aegis logs server/subscription/data
 
 USER aegis
-EXPOSE 3000
+EXPOSE 4000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -fsS http://127.0.0.1:${PORT}/api/health || exit 1
