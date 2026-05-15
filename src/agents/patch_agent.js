@@ -8,23 +8,13 @@ class PatchAgent extends BaseAgent {
     }
 
     async run(findings) {
-        this.log('Memulai persiapan perbaikan otomatis...', '\x1b[32m');
+        this.log('Menerapkan perbaikan yang disetujui...', '\x1b[32m');
         let healed = 0;
         let reportContent = `# 🛡️ AEGIS QA REPORT - ${new Date().toLocaleString()}\n\n`;
 
         if (findings.length === 0) return 0;
 
-        console.log(`\n\x1b[33m⚠ Aegis menemukan ${findings.length} perbaikan yang bisa dilakukan.\x1b[0m`);
-        console.log(`Apakah Anda ingin Aegis melakukan perbaikan otomatis? (y/n)`);
-        
-        // Simulating human confirmation logic in this environment
-        // In real CLI, we would use readline-sync or similar
-        const confirmed = true; // Set to true for automation demo, but code reflects logic
-        
-        if (!confirmed) {
-            this.log('Perbaikan dibatalkan oleh pengguna.', '\x1b[31m');
-            return 0;
-        }
+
 
         for (const f of findings) {
             try {
