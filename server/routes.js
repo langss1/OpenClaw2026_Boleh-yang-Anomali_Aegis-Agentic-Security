@@ -3,8 +3,13 @@
 const express = require('express');
 const paymentHandlers = require('./payment/handlers');
 const subHandlers = require('./subscription/handlers');
+const webHandlers = require('./web/handlers');
 
 function registerRoutes(app) {
+    app.get('/', webHandlers.landing);
+    app.get('/pricing', webHandlers.pricing);
+    app.get('/success', webHandlers.success);
+
     const api = express.Router();
 
     api.get('/plans', subHandlers.getPlans);
