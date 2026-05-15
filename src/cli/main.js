@@ -25,8 +25,8 @@ async function main() {
                 await runSecurity(targetDir);
                 break;
             case 'QA':
-                const { runSecurity: getFindings } = require('../modules/SecurityCode');
-                const findingsT = await getFindings(targetDir);
+                const { runSecurity: getFindingsQA } = require('../modules/SecurityCode');
+                const findingsT = await getFindingsQA(targetDir);
                 const { runQA } = require('../modules/QA');
                 await runQA(targetDir, findingsT);
                 break;
@@ -42,8 +42,12 @@ async function main() {
                 break;
             case 'Ask':
                 const { runAsk } = require('../modules/Ask');
-                const q = args.slice(1).join(' ') || 'Bagaimana status keamanan saya?';
+                const q = args.slice(1).join(' ') || '';
                 await runAsk(targetDir, q);
+                break;
+            case 'setup':
+                const { runSetup } = require('../modules/Setup');
+                await runSetup(targetDir);
                 break;
             case 'autopilot':
                 const Orchestrator = require('../core/orchestrator');
@@ -52,14 +56,15 @@ async function main() {
             case 'help':
             default:
                 console.log(`
-\x1b[1mFITUR UTAMA (OPENCLAW SKILLS):\x1b[0m
+\x1b[1mFITUR UTAMA (AEGIS SKILLS):\x1b[0m
   \x1b[34mSecurityCode\x1b[0m   Cek kode yang berbahaya / rentan.
   \x1b[32mQA\x1b[0m             Perbaiki kode otomatis (Auto-Fix).
   \x1b[35mLocalPentest\x1b[0m   Simulasi serangan hacker di komputer lokal.
   \x1b[36mDevelopment\x1b[0m    Buat folder & arsitektur kode yang aman.
-  \x1b[38;5;208mAsk\x1b[0m            Tanya pakar keamanan soal codingan Anda.
+  \x1b[38;5;208mAsk\x1b[0m            Tanya pakar keamanan soal codingan Anda (Chat Mode).
+  \x1b[33msetup\x1b[0m          Inisialisasi sistem AEGIS (Install & Config).
 
-\x1b[1mOPENCLAW GATEWAY:\x1b[0m
+\x1b[1mAEGIS GATEWAY:\x1b[0m
   \x1b[31mautopilot\x1b[0m      Jalankan semua skill di atas secara berurutan.
                 `);
         }
