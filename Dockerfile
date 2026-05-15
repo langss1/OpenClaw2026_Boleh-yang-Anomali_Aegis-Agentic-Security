@@ -5,8 +5,6 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
-# Coba `npm ci` (lock file sinkron). Jika lock out-of-sync, fallback ke `npm install`
-# agar build tidak macet di environment hackathon (regenerate lock saat build).
 RUN if [ -f package-lock.json ]; then \
       npm ci --omit=dev --no-audit --no-fund \
         || (echo ">>> npm ci gagal, fallback ke npm install" \
