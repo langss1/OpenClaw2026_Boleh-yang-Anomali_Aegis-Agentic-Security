@@ -35,6 +35,11 @@ async function runQASkill({ targetDir, findings } = {}) {
         throw new Error(MSG.errorFindingsInvalid);
     }
 
+    const qualityFindings = findings.filter((f) => !f.category || f.category === 'quality');
+    if (findings.length > 0 && qualityFindings.length === 0) {
+        throw new Error('[QA SKILL] Temuan bukan ranah QA. Gunakan SecurityCode untuk isu keamanan.');
+    }
+
     const log = createRunLogger(targetDir, {
         logDir: PROTO.logDir,
         filePrefix: PROTO.logFilePrefix,
@@ -43,9 +48,9 @@ async function runQASkill({ targetDir, findings } = {}) {
 
     log.section('QA SKILL RUN START');
     log.info(`targetDir: ${targetDir}`);
-    log.info(`findingsCount: ${findings.length}`);
+    log.info(`findingsCount: ${qualityFindings.length} (quality)`);
 
-    if (findings.length === 0) {
+    if (qualityFindings.length === 0) {
         console.log(`\x1b[32m${MSG.infoEmptyFindings}\x1b[0m`);
         log.info('Tidak ada finding. Skill keluar tanpa perubahan.');
         log.section('QA SKILL RUN END');
@@ -53,7 +58,7 @@ async function runQASkill({ targetDir, findings } = {}) {
     }
 
     log.section('Findings');
-    findings.forEach((f, i) => {
+    qualityFindings.forEach((f, i) => {
         log.info(`#${i + 1} ${f.severity || '?'} ${f.issue || '?'} @ ${f.file}:${f.line}`);
     });
 
@@ -61,7 +66,7 @@ async function runQASkill({ targetDir, findings } = {}) {
 
     let result;
     try {
-        result = (await runQA(targetDir, findings)) || { healed: 0, total: findings.length, score: 0 };
+        result = (await runQA(targetDir, qualityFindings)) || { healed: 0, total: qualityFindings.length, score: 0 };
     } catch (err) {
         log.error(`runQA gagal: ${err.message}`);
         log.section('QA SKILL RUN END (ERROR)');
