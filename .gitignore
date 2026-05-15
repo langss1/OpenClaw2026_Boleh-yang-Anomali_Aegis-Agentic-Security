@@ -1,0 +1,10 @@
+node_modules/
+backups/
+*.bak
+.DS_Store
+.next/
+dist/
+build/
+.env
+Aegisfix/
+openclaw/.git/
