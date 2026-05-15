@@ -70,8 +70,13 @@ async function main() {
                 break;
             }
             case 'setup': {
-                const { runSetup } = require('../modules/Setup');
-                await runSetup(targetDir);
+                // Modul setup belum diimplementasikan — arahkan ke instruksi manual.
+                console.log(`\x1b[33m[setup]\x1b[0m Belum ada wizard otomatis. Ikuti langkah ini:`);
+                console.log(`  1. \x1b[36mnpm install -g aegis-agentic-security\x1b[0m  (atau install via GitHub)`);
+                console.log(`  2. Set env: \x1b[36mAEGIS_API_KEY\x1b[0m (DeepSeek/Aegis AI) & \x1b[36mGEMINI_API_KEY\x1b[0m (Ask).`);
+                console.log(`     Atau buat \x1b[36m.env\x1b[0m berdasarkan \x1b[36m.env.example\x1b[0m.`);
+                console.log(`  3. Tes: \x1b[36maegis SecurityCode\x1b[0m, \x1b[36maegis QA\x1b[0m, \x1b[36maegis LocalPentest\x1b[0m.`);
+                console.log(`  Detail: lihat \x1b[36mdocs/INSTALL.md\x1b[0m & \x1b[36mREADME.md\x1b[0m.`);
                 break;
             }
             case 'autopilot': {
