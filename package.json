@@ -6,10 +6,16 @@
   "bin": {
     "aegis": "src/cli/main.js"
   },
+  "scripts": {
+    "server": "node server/index.js",
+    "server:dev": "node --watch server/index.js"
+  },
   "dependencies": {
     "axios": "^1.16.1",
+    "dotenv": "^16.4.7",
+    "express": "^5.2.1",
     "fs-extra": "^11.3.5",
-    "dotenv": "^16.4.7"
+    "midtrans-client": "^1.4.3"
   },
   "engines": {
     "node": ">=18"
