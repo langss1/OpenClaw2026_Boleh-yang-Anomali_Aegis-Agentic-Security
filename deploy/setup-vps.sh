@@ -40,7 +40,10 @@ detect_os() {
 
 ensure_packages() {
   log "Update sistem & install dependency dasar..."
-  dnf -y install epel-release || true
+  # OpenCloudOS sudah menyediakan EPOL (setara EPEL); skip epel-release jika OS=opencloudos.
+  if [[ "${ID:-}" != "opencloudos" ]]; then
+    dnf -y install epel-release || true
+  fi
   dnf -y install \
     curl wget git tar unzip jq rsync openssl ca-certificates \
     policycoreutils-python-utils firewalld
@@ -48,13 +51,35 @@ ensure_packages() {
 }
 
 install_node() {
-  if ! command -v node >/dev/null 2>&1; then
-    log "Install Node.js 20 (NodeSource)..."
-    curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
-    dnf -y install nodejs
-  else
+  if command -v node >/dev/null 2>&1; then
     log "Node sudah terpasang: $(node -v)"
+    return
   fi
+
+  log "Install Node.js 20..."
+  # Coba dnf module dulu (paling kompatibel untuk OpenCloudOS / RHEL 9).
+  if dnf module list nodejs 2>/dev/null | grep -qE '^nodejs\s+20'; then
+    log "  -> via dnf module nodejs:20"
+    dnf module reset -y nodejs || true
+    dnf module enable -y nodejs:20
+    dnf -y install nodejs npm
+    return
+  fi
+
+  # Fallback: NodeSource via repo manual (script setup_20.x menolak OpenCloudOS).
+  log "  -> via NodeSource (manual repo)"
+  rpm --import https://rpm.nodesource.com/gpgkey/ns-operations-public.key || true
+  cat >/etc/yum.repos.d/nodesource-nodejs.repo <<'REPO'
+[nodesource-nodejs]
+name=Node.js Packages - NodeSource pub_20.x
+baseurl=https://rpm.nodesource.com/pub_20.x/nodistro/nodejs/x86_64
+priority=9
+enabled=1
+gpgcheck=1
+gpgkey=https://rpm.nodesource.com/gpgkey/ns-operations-public.key
+module_hotfixes=1
+REPO
+  dnf -y install nodejs
 }
 
 install_docker() {
@@ -62,9 +87,12 @@ install_docker() {
     log "Docker sudah terpasang: $(docker --version)"
     return
   fi
-  log "Install Docker CE..."
+  log "Install Docker CE (repo CentOS, kompatibel untuk RHEL 9 family)..."
   dnf -y install dnf-plugins-core
-  dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  # OpenCloudOS tidak punya repo Docker resmi; pakai repo CentOS (rpm-nya kompatibel).
+  if ! [ -f /etc/yum.repos.d/docker-ce.repo ]; then
+    dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  fi
   dnf -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
   systemctl enable --now docker
 }
