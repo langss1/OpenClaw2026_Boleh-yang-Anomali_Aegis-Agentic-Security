@@ -251,3 +251,100 @@ npm unpublish aegis-agentic-security --force
   **dijamin** tidak ikut karena sudah di-exclude di `.npmignore` dan tidak di `files`.
 - Untuk paket scoped (`@username/aegis`), butuh `--access public` kalau mau
   paket gratis publik (default scoped = private = bayar).
+
+---
+
+## Auto-publish via GitHub Actions (rekomendasi setelah publish pertama)
+
+Setelah publish pertama berhasil, **rilis berikutnya cukup `git push tag`** —
+GitHub Actions yang publish ke npm. Sudah ada workflow di
+`.github/workflows/publish.yml`.
+
+### Setup sekali
+
+1. **Buat npm Automation token** (bypass 2FA di CI):
+   - Login ke https://www.npmjs.com
+   - Klik avatar → **Access Tokens** → **Generate New Token** → **Automation**
+   - Copy token-nya (formatnya `npm_xxxxxxxx...`)
+
+2. **Tambah token ke GitHub Secrets**:
+   - Buka https://github.com/langss1/OpenClaw2026_Boleh-yang-Anomali_Aegis-Agentic-Security
+   - Settings → Secrets and variables → Actions → **New repository secret**
+     - Name : `NPM_TOKEN`
+     - Value: (paste token tadi)
+
+### Flow rilis setelah setup
+
+```bash
+# 1. Edit kode + commit seperti biasa
+git add .
+git commit -m "feat: tambah agent forensics"
+git push
+
+# 2. Bump versi (otomatis: update package.json + commit + bikin git tag)
+npm version patch          # 3.1.0 → 3.1.1
+# atau:
+npm version minor          # 3.1.0 → 3.2.0
+# atau:
+npm version major          # 3.1.0 → 4.0.0
+
+# 3. Push tag — GitHub Action akan auto-publish
+git push --follow-tags
+```
+
+Setelah `git push --follow-tags`, buka tab Actions di GitHub repo. Workflow
+"Publish to npm" akan jalan ~1-2 menit, lalu paket muncul di
+https://www.npmjs.com/package/aegis-agentic-security dengan versi baru.
+
+### Manual trigger (kalau publish gagal di run otomatis)
+
+Actions → "Publish to npm" → **Run workflow** → pilih branch tag-nya.
+Bisa juga **dry-run** dulu (centang opsi `dry_run: true`) untuk test tanpa
+benar-benar upload ke registry.
+
+### Supply chain attestation
+
+Workflow sudah include `--provenance` flag — paket akan punya
+**signed attestation** yang membuktikan paket ini di-build dari source code
+di GitHub repo Anda, di commit hash tertentu. User bisa verifikasi:
+
+```bash
+npm view aegis-agentic-security
+# → cari field "provenance"
+```
+
+Ini meningkatkan trust di mata juri / pengguna karena membuktikan tidak ada
+tampering antara source di GitHub dan tarball di npm.
+
+---
+
+## Berapa kali bisa update?
+
+**Tidak terbatas**, selama Anda bump versi setiap publish. Aturan npm:
+
+| Aturan | Penjelasan |
+|---|---|
+| Versi yang sudah publish **immutable** | Tidak bisa edit `3.1.0` setelah upload. Harus publish versi baru (mis. `3.1.1`). |
+| Versi yang pernah ada **tidak bisa direuse** | Sekali publish `3.1.0`, nama+versi itu terkunci selamanya — bahkan kalau di-unpublish. |
+| Unpublish hanya **dalam 72 jam** | Setelah 72 jam, hanya bisa dengan alasan keamanan (kirim ticket ke npm support). |
+| User di laptop **tidak auto-update** | User harus run `npm update -g aegis-agentic-security` atau install ulang. |
+| Semua versi **disimpan selamanya** | User bisa `npm install -g aegis-agentic-security@3.1.0` untuk pin ke versi lama. |
+
+Praktis: Anda bisa publish 100x sehari kalau mau, tiap kali dengan versi naik.
+
+### Versi yang user pakai
+
+Saat user install tanpa spesifikasi versi (`npm install -g aegis-agentic-security`),
+mereka dapat **versi terbaru** (`latest` tag).
+
+User existing yang sudah install `3.1.0` tidak otomatis upgrade ke `3.2.0`.
+Mereka harus:
+
+```bash
+npm update -g aegis-agentic-security        # update ke latest minor compatible
+# atau:
+npm install -g aegis-agentic-security@latest   # paksa ke latest
+```
+
+Untuk notifikasi update di CLI sendiri, bisa pakai package `update-notifier`
+(future enhancement, belum ada di paket ini).
