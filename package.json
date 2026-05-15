@@ -11,6 +11,9 @@
     "fs-extra": "^11.3.5",
     "dotenv": "^16.4.7"
   },
+  "scripts": {
+    "test:pentest": "node -e \"require('./openclaw/agents/Pentest').runPentestAgent({ targetDir: process.cwd(), targetUrl: 'http://localhost:8080', autoConfirm: 'never' }).then(() => process.exit(0)).catch(err => { console.error(err); process.exit(1); })\""
+  },
   "engines": {
     "node": ">=18"
   }
