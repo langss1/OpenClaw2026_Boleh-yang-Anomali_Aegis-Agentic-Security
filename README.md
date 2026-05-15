@@ -32,13 +32,13 @@ If you are an AI assistant working on this project, you **MUST** adhere to the f
 
 ## 🚀 Getting Started
 
-### Install Aegis CLI di laptop Anda (1 baris)
+### Install via npm (1 baris, global)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/langss1/OpenClaw2026_Boleh-yang-Anomali_Aegis-Agentic-Security/feat/vps-integration/install.sh | bash
+npm install -g aegis-agentic-security
 ```
 
-Setelah itu (pastikan `~/.local/bin` ada di PATH):
+Setelah itu langsung bisa dipanggil dari direktori manapun:
 
 ```bash
 aegis help                                    # menu bantuan
@@ -48,8 +48,20 @@ aegis run --agent qa --task "perbaiki kode di . secara aman"
 aegis autopilot                               # full pipeline (SecurityCode → QA → Pentest)
 ```
 
-Cara install alternatif (npm install -g, dev mode, npx, alias SSH ke VPS):
-lihat **[`docs/INSTALL.md`](./docs/INSTALL.md)**.
+> Butuh **Node.js 18+**. Kalau `EACCES` saat install, set npm prefix ke home:
+> ```bash
+> npm config set prefix "$HOME/.npm-global"
+> echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+> ```
+
+### Install langsung dari GitHub (tanpa registry)
+
+```bash
+npm install -g github:langss1/OpenClaw2026_Boleh-yang-Anomali_Aegis-Agentic-Security
+```
+
+Cara install alternatif (installer script, dev mode, npx, alias SSH ke VPS) +
+instruksi publish ke npm untuk maintainer: lihat **[`docs/INSTALL.md`](./docs/INSTALL.md)**.
 
 ---
 
