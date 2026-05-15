@@ -1,0 +1,35 @@
+{
+  "name": "aegis-professional",
+  "version": "3.0.0",
+  "description": "Unified Autonomous Security Ecosystem",
+  "main": "src/cli/main.js",
+  "bin": {
+    "aegis": "src/cli/main.js"
+  },
+  "scripts": {
+    "server": "node server/index.js",
+    "server:dev": "node --watch server/index.js",
+    "test:pentest": "node -e \"require('./openclaw/agents/Pentest').runPentestAgent({ targetDir: process.cwd(), targetUrl: 'http://localhost:8080', autoConfirm: 'never' }).then(() => process.exit(0)).catch(err => { console.error(err); process.exit(1); })\"",
+    "docker:build": "docker build -t aegis-saas:latest .",
+    "docker:up": "docker compose up -d aegis",
+    "docker:logs": "docker compose logs -f aegis",
+    "docker:down": "docker compose down",
+    "vps:setup": "bash deploy/setup-vps.sh",
+    "deploy": "bash deploy/deploy.sh",
+    "deploy:docker": "DEPLOY_MODE=docker bash deploy/deploy.sh",
+    "deploy:systemd": "DEPLOY_MODE=systemd bash deploy/deploy.sh",
+    "vps:cert": "bash deploy/issue-cert.sh",
+    "vps:logs": "bash -c 'source .env && ssh -p ${VPS_PORT:-22} ${VPS_USER:-root}@${VPS_HOST} \"journalctl -u ${VPS_SERVICE_NAME:-aegis} -e -f\"'",
+    "vps:status": "bash -c 'source .env && ssh -p ${VPS_PORT:-22} ${VPS_USER:-root}@${VPS_HOST} \"systemctl status ${VPS_SERVICE_NAME:-aegis} || docker compose -f ${VPS_APP_DIR:-/opt/aegis}/docker-compose.yml ps\"'"
+  },
+  "dependencies": {
+    "axios": "^1.16.1",
+    "dotenv": "^16.4.7",
+    "express": "^5.2.1",
+    "fs-extra": "^11.3.5",
+    "midtrans-client": "^1.4.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
