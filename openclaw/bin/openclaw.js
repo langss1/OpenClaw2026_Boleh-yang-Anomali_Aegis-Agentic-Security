@@ -30,6 +30,17 @@ const { runIntentParser } = require('../lib/cli/intent');
 const OPENCLAW_ROOT = path.resolve(__dirname, '..');
 const AGENTS_DIR = path.join(OPENCLAW_ROOT, 'agents');
 
+// Deteksi nama binary yang dipakai user (aegis vs openclaw vs lainnya).
+// Dipakai di banner & tip supaya konsisten.
+const SELF_NAME = (() => {
+    try {
+        const base = path.basename(process.argv[1] || '');
+        if (/aegis/i.test(base)) return 'aegis';
+        if (/^main\.js$/.test(base) && /\/src\/cli\//.test(process.argv[1] || '')) return 'aegis';
+    } catch (_) { /* ignore */ }
+    return 'openclaw';
+})();
+
 // ─────────────────────────────────────────────────────────────────────────────
 // ANSI
 // ─────────────────────────────────────────────────────────────────────────────
@@ -128,19 +139,21 @@ function findAgent(name) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function printBanner() {
+    const label = `${SELF_NAME} agent runtime — Aegis edition`;
     if (NO_COLOR) {
-        console.log('openclaw CLI shim — Aegis edition\n');
+        console.log(label + '\n');
         return;
     }
+    const pad = Math.max(0, 46 - label.length);
     console.log(`${c.bold}${c.cyan}╔══════════════════════════════════════════════════╗${c.reset}`);
-    console.log(`${c.bold}${c.cyan}║  ${paint('magenta', 'openclaw')} ${paint('gray', '·')} CLI shim — Aegis edition${' '.repeat(7)}║${c.reset}`);
+    console.log(`${c.bold}${c.cyan}║  ${paint('magenta', SELF_NAME)} ${paint('gray', '·')} agent runtime — Aegis edition${' '.repeat(Math.max(0, pad - SELF_NAME.length + 2))}║${c.reset}`);
     console.log(`${c.bold}${c.cyan}╚══════════════════════════════════════════════════╝${c.reset}\n`);
 }
 
 function printHelp() {
     printBanner();
     console.log(`${c.bold}USAGE${c.reset}
-  openclaw <command> [options]
+  ${SELF_NAME} <command> [options]
 
 ${c.bold}COMMANDS${c.reset}
   ${paint('cyan', 'list')}                                  Tampilkan semua agent yang terdaftar
@@ -165,20 +178,20 @@ ${c.bold}OPSI 'run'${c.reset}
 
 ${c.bold}CONTOH${c.reset}
   ${paint('gray', '# 1) Lihat daftar agent')}
-  openclaw list
+  ${SELF_NAME} list
 
   ${paint('gray', '# 2) Lihat detail agent')}
-  openclaw describe --agent pentest
+  ${SELF_NAME} describe --agent pentest
 
   ${paint('gray', '# 3) Jalankan agent dengan task alami (intent parser)')}
-  openclaw run --agent pentest --task "scan http://127.0.0.1:3000 untuk SQLi"
+  ${SELF_NAME} run --agent pentest --task "scan http://127.0.0.1:3000 untuk SQLi"
 
   ${paint('gray', '# 4) Jalankan agent dengan input JSON (presisi)')}
-  openclaw run --agent pentest \\
+  ${SELF_NAME} run --agent pentest \\
     --input '{"targetUrl":"http://127.0.0.1:3000","categories":["A03"],"perCategory":3}'
 
   ${paint('gray', '# 5) Shortcut flag-based')}
-  openclaw run --agent pentest --target http://127.0.0.1:3000 --categories A01,A03 -v
+  ${SELF_NAME} run --agent pentest --target http://127.0.0.1:3000 --categories A01,A03 -v
 `);
 }
 
@@ -223,7 +236,7 @@ function cmdList(opts) {
         }
         console.log('');
     }
-    console.log(paint('gray', 'Pakai `openclaw describe --agent <id>` untuk detail.'));
+    console.log(paint('gray', `Pakai \`${SELF_NAME} describe --agent <id>\` untuk detail.`));
     return 0;
 }
 
@@ -235,7 +248,7 @@ function cmdDescribe(opts) {
     const agent = findAgent(opts.agent);
     if (!agent) {
         process.stderr.write(paint('red', `[err] agent '${opts.agent}' tidak ditemukan.\n`));
-        process.stderr.write(paint('gray', `Pakai 'openclaw list' untuk lihat opsi.\n`));
+        process.stderr.write(paint('gray', `Pakai '${SELF_NAME} list' untuk lihat opsi.\n`));
         return 2;
     }
     if (opts.json) {
@@ -272,9 +285,9 @@ function cmdDescribe(opts) {
 
     console.log(`\n${paint('bold', 'Contoh invokasi:')}`);
     console.log(`  ${paint('gray', '# free-text via intent parser')}`);
-    console.log(`  openclaw run --agent ${agent.id} --task "..."`);
+    console.log(`  ${SELF_NAME} run --agent ${agent.id} --task "..."`);
     console.log(`  ${paint('gray', '# JSON terstruktur (lihat io.input di atas)')}`);
-    console.log(`  openclaw run --agent ${agent.id} --input '<json>'\n`);
+    console.log(`  ${SELF_NAME} run --agent ${agent.id} --input '<json>'\n`);
     return 0;
 }
 
@@ -286,7 +299,7 @@ async function cmdRun(opts) {
     const agent = findAgent(opts.agent);
     if (!agent) {
         process.stderr.write(paint('red', `[err] agent '${opts.agent || ''}' tidak ditemukan.\n`));
-        process.stderr.write(paint('gray', `Pakai 'openclaw list' untuk lihat opsi.\n`));
+        process.stderr.write(paint('gray', `Pakai '${SELF_NAME} list' untuk lihat opsi.\n`));
         return 2;
     }
 
@@ -417,11 +430,10 @@ function formatResultPretty(result) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Main
+// Main — accept argv parameter agar bisa dipanggil dari `aegis` CLI juga.
 // ─────────────────────────────────────────────────────────────────────────────
 
-async function main() {
-    const argv = process.argv.slice(2);
+async function main(argv = process.argv.slice(2)) {
     if (argv.length === 0 || argv[0] === 'help' || argv[0] === '--help' || argv[0] === '-h') {
         printHelp();
         return 0;
@@ -439,16 +451,20 @@ async function main() {
         case 'version':  process.stdout.write('openclaw-shim 0.1.0\n'); return 0;
         default:
             process.stderr.write(paint('red', `[err] command tidak dikenal: ${sub}\n`));
-            process.stderr.write(paint('gray', `Pakai 'openclaw help' untuk daftar command.\n`));
+            process.stderr.write(paint('gray', `Pakai '${SELF_NAME} help' untuk daftar command.\n`));
             return 2;
     }
 }
 
-main().then(
-    (code) => process.exit(typeof code === 'number' ? code : 0),
-    (e) => {
-        process.stderr.write(paint('red', `\n[fatal] ${e.message}\n`));
-        if (process.env.AEGIS_DEBUG === '1' && e.stack) process.stderr.write(e.stack + '\n');
-        process.exit(1);
-    },
-);
+module.exports = { main };
+
+if (require.main === module) {
+    main().then(
+        (code) => process.exit(typeof code === 'number' ? code : 0),
+        (e) => {
+            process.stderr.write(paint('red', `\n[fatal] ${e.message}\n`));
+            if (process.env.AEGIS_DEBUG === '1' && e.stack) process.stderr.write(e.stack + '\n');
+            process.exit(1);
+        },
+    );
+}
