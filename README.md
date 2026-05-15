@@ -31,9 +31,25 @@ If you are an AI assistant working on this project, you **MUST** adhere to the f
 ---
 
 ## 🚀 Getting Started
-Jalankan perintah berikut di terminal Anda:
-- `aegis help` - Untuk melihat menu bantuan.
-- `aegis autopilot` - Untuk menjalankan pipeline penuh secara otonom.
+
+### Install Aegis CLI di laptop Anda (1 baris)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/langss1/OpenClaw2026_Boleh-yang-Anomali_Aegis-Agentic-Security/feat/vps-integration/install.sh | bash
+```
+
+Setelah itu (pastikan `~/.local/bin` ada di PATH):
+
+```bash
+aegis help                                    # menu bantuan
+aegis list                                    # daftar agent OpenClaw
+aegis run --agent pentest --task "scan http://localhost:3000 untuk SQLi"
+aegis run --agent qa --task "perbaiki kode di . secara aman"
+aegis autopilot                               # full pipeline (SecurityCode → QA → Pentest)
+```
+
+Cara install alternatif (npm install -g, dev mode, npx, alias SSH ke VPS):
+lihat **[`docs/INSTALL.md`](./docs/INSTALL.md)**.
 
 ---
 
