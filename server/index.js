@@ -31,8 +31,10 @@ function createApp() {
 
 function start() {
     const app = createApp();
-    app.listen(cfg.port, () => {
-        console.log(`\n\x1b[32m[AEGIS SaaS]\x1b[0m listening on http://localhost:${cfg.port}`);
+    app.listen(cfg.port, cfg.host, () => {
+        const bind = `${cfg.host}:${cfg.port}`;
+        console.log(`\n\x1b[32m[AEGIS SaaS]\x1b[0m bound to ${bind}`);
+        console.log(`  Public URL: ${cfg.publicUrl}`);
         console.log(`  Midtrans  : ${isMidtransConfigured() ? `configured (${cfg.midtrans.isProduction ? 'PRODUCTION' : 'sandbox'})` : '\x1b[33mNOT CONFIGURED\x1b[0m'}`);
         console.log(`  Plans     : ${cfg.plans.map(p => p.id).join(', ')}`);
         console.log(`  Endpoints :`);

@@ -35,5 +35,22 @@ Jalankan perintah berikut di terminal Anda:
 - `aegis help` - Untuk melihat menu bantuan.
 - `aegis autopilot` - Untuk menjalankan pipeline penuh secara otonom.
 
+---
+
+## ☁️ Deploy ke VPS (OpenCloudOS 9 / RHEL 9 family)
+Lihat **[`docs/VPS_DEPLOYMENT.md`](./docs/VPS_DEPLOYMENT.md)** untuk panduan lengkap.
+
+Ringkas:
+```bash
+cp .env.example .env                            # isi VPS_HOST, VPS_USER, MIDTRANS_*
+scp deploy/setup-vps.sh $VPS_USER@$VPS_HOST:/tmp/
+ssh $VPS_USER@$VPS_HOST bash /tmp/setup-vps.sh  # bootstrap sekali
+npm run deploy                                  # docker compose (default)
+# atau:
+npm run deploy:systemd                          # native node + systemd
+```
+
+Endpoint health: `GET /api/health` · Webhook Midtrans: `POST /api/payment/webhook`.
+
 *This ecosystem is managed by the Aegis Planning Agent.*
 

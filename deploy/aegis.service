@@ -1,0 +1,40 @@
+[Unit]
+Description=Aegis SaaS Backend (OpenClaw integration)
+Documentation=https://github.com/langss1/OpenClaw2026_Boleh-yang-Anomali_Aegis-Agentic-Security
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=aegis
+Group=aegis
+WorkingDirectory=/opt/aegis
+EnvironmentFile=/opt/aegis/.env
+ExecStart=/usr/bin/node /opt/aegis/server/index.js
+Restart=on-failure
+RestartSec=5
+KillMode=mixed
+TimeoutStopSec=15
+
+# Hardening (RHEL 9 / OpenCloudOS 9 compatible)
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/aegis/logs /opt/aegis/server/subscription/data
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallArchitectures=native
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=aegis
+
+[Install]
+WantedBy=multi-user.target
