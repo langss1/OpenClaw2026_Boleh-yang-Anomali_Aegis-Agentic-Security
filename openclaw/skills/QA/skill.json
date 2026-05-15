@@ -1,0 +1,71 @@
+{
+  "name": "QA",
+  "version": "1.1.0",
+  "title": "Aegis QA Skill",
+  "description": "Auto-Fix terkontrol untuk isu kualitas kode (kebersihan, hygiene, maintainability) dari pemindaian QualityCode. Bukan untuk kerentanan keamanan — itu ranah SecurityCode. Wajib konfirmasi manusia per temuan.",
+  "module": "QA",
+  "entry": "./index.js",
+  "handler": "runQASkill",
+  "owner": "agent:QA",
+  "protocols": {
+    "humanInTheLoop": true,
+    "reportRequired": true,
+    "progressLog": "docs/progres_QA.md",
+    "scanReport": "logs/QA/REPORT_Quality_Scan.md",
+    "report": "logs/QA/REPORT_Quality_Code.md",
+    "logDir": "logs/QA",
+    "upstreamScan": {
+      "modulePath": "../../../src/modules/QualityCode",
+      "moduleHandler": "runQuality"
+    },
+    "logFilePrefix": "Quality_Code-",
+    "logFileExtension": ".log"
+  },
+  "implementation": {
+    "modulePath": "../../../src/modules/QA",
+    "moduleHandler": "runQA"
+  },
+  "input": {
+    "targetDir": {
+      "type": "string",
+      "required": true,
+      "description": "Direktori proyek target yang akan diperbaiki."
+    },
+    "findings": {
+      "type": "array",
+      "required": true,
+      "description": "Daftar temuan kualitas kode (category: quality) dari QualityCode. Skill QA tidak memindai keamanan.",
+      "itemShape": {
+        "category": "quality",
+        "file": "string",
+        "line": "number",
+        "issue": "string",
+        "severity": "string",
+        "currentCode": "string",
+        "fixedCode": "string",
+        "description": "string"
+      }
+    }
+  },
+  "output": {
+    "healed": "number",
+    "total": "number",
+    "score": "number",
+    "reportFile": "string | null",
+    "logFile": "string | null"
+  },
+  "constraints": [
+    "Tidak mengubah kode tanpa konfirmasi eksplisit pengguna (lihat agent.md §3).",
+    "Tidak menjalankan pemindaian keamanan (SAST) — itu tanggung jawab SecurityCode.",
+    "Hanya memproses finding dengan category 'quality'.",
+    "Wajib membuat backup .bak sebelum patch (didelegasikan ke PatchAgent)."
+  ],
+  "messages": {
+    "errorTargetDirMissing": "[QA SKILL] \"targetDir\" wajib diisi (string).",
+    "errorTargetDirNotFound": "[QA SKILL] targetDir tidak ditemukan: {targetDir}",
+    "errorFindingsInvalid": "[QA SKILL] \"findings\" harus berupa array temuan kualitas (QualityCode). Untuk keamanan gunakan SecurityCode.",
+    "infoEmptyFindings": "[QA SKILL] Tidak ada temuan dari upstream. Selesai tanpa perubahan.",
+    "infoLogStored": "[QA SKILL] Log tersimpan: {logFile}"
+  },
+  "scope": "qa-only"
+}

@@ -1,0 +1,61 @@
+{
+  "currency": "IDR",
+  "plans": [
+    {
+      "id": "free",
+      "name": "Aegis Free",
+      "priceIdr": 0,
+      "billingCycle": "monthly",
+      "tagline": "Untuk mencoba kemampuan dasar",
+      "features": [
+        "5 scan SecurityCode / hari",
+        "Auto-Fix QA dengan mode interaktif",
+        "Backend AI: mock (deterministik)",
+        "Komunitas only"
+      ],
+      "limits": {
+        "scansPerDay": 5,
+        "aiBackend": "mock",
+        "interactiveOnly": true
+      }
+    },
+    {
+      "id": "pro",
+      "name": "Aegis Pro",
+      "priceIdr": 99000,
+      "billingCycle": "monthly",
+      "tagline": "Untuk developer & tim kecil",
+      "features": [
+        "Unlimited scan & patch",
+        "Backend AI: Groq (LLM real)",
+        "Mode auto-confirm safe-only",
+        "Email support (24 jam)"
+      ],
+      "limits": {
+        "scansPerDay": -1,
+        "aiBackend": "groq",
+        "interactiveOnly": false
+      },
+      "highlighted": true
+    },
+    {
+      "id": "enterprise",
+      "name": "Aegis Enterprise",
+      "priceIdr": 499000,
+      "billingCycle": "monthly",
+      "tagline": "Untuk tim besar & compliance",
+      "features": [
+        "Semua fitur Pro",
+        "Mode auto-confirm penuh (CI ready)",
+        "Backend AI: pilih bebas (Groq, OpenAI, DeepSeek)",
+        "Custom system prompt per agent",
+        "Priority support + SLA"
+      ],
+      "limits": {
+        "scansPerDay": -1,
+        "aiBackend": "any",
+        "interactiveOnly": false
+      }
+    }
+  ]
+}

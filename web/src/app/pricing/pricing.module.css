@@ -1,0 +1,68 @@
+.page {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  background: #030000;
+  padding: 40px 24px;
+  font-family: var(--font-poppins), sans-serif;
+  isolation: isolate;
+}
+
+.inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.card {
+  background: linear-gradient(145deg, rgba(15, 5, 5, 0.95), rgba(5, 1, 1, 0.98));
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+
+.cardHighlight {
+  border-color: rgba(220, 38, 38, 0.4);
+}
+
+.btnPrimary,
+.btnFree {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: white;
+}
+
+.btnPrimary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btnFree {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+}

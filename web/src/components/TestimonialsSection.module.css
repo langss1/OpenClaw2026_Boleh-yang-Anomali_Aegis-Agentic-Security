@@ -1,0 +1,116 @@
+.section {
+  position: relative;
+  z-index: 2;
+  padding: 100px 0;
+  background: #0a0101;
+  overflow: hidden;
+}
+
+.header { text-align: center; margin-bottom: 56px; }
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  font-family: var(--font-poppins);
+  font-size: 17px;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.carouselWrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.fadeLeft, .fadeRight {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 120px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.fadeLeft {
+  left: 0;
+  background: linear-gradient(90deg, #0a0101, transparent);
+}
+
+.fadeRight {
+  right: 0;
+  background: linear-gradient(270deg, #0a0101, transparent);
+}
+
+.track {
+  display: flex;
+  gap: 20px;
+  padding: 16px 4px;
+  will-change: transform;
+  width: max-content;
+}
+
+.card {
+  width: 380px;
+  flex-shrink: 0;
+  padding: 24px;
+  background: #0d0101;
+  border: 1px solid rgba(255, 0, 0, 0.1);
+  border-radius: 24px;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.card:hover {
+  border-color: rgba(255, 0, 0, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(255, 0, 0, 0.05);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.avatarWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 0, 0, 0.2);
+}
+
+.avatar { font-size: 24px; }
+
+.name {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.role {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.quote {
+  font-family: var(--font-poppins);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-style: italic;
+}

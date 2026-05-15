@@ -1,0 +1,25 @@
+.main {
+  position: relative;
+  min-height: 100vh;
+  background: #030000;
+}
+
+.gridBg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.revealContainer {
+  animation: slideUpFade 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}

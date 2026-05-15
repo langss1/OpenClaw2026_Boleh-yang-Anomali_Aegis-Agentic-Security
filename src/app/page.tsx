@@ -13,7 +13,6 @@ import IconRibbonSection from '@/components/IconRibbonSection'
 import FeaturesSection from '@/components/FeaturesSection'
 import SecuritySection from '@/components/SecuritySection'
 import LocalPenTestSection from '@/components/LocalPenTestSection'
-import DevelopmentSection from '@/components/DevelopmentSection'
 import AskSection from '@/components/AskSection'
 import SecurityOnCodeSection from '@/components/SecurityOnCodeSection'
 import DownloadSection from '@/components/DownloadSection'
@@ -52,7 +51,6 @@ export default function Home() {
           <FeaturesSection />
           <SecuritySection />
           <LocalPenTestSection />
-          <DevelopmentSection />
           <AskSection />
           <SecurityOnCodeSection />
           <DownloadSection />
