@@ -1,0 +1,110 @@
+name: Publish to npm
+
+# Auto-publish ke npm registry saat ada tag baru `vX.Y.Z` di-push.
+#
+# Workflow:
+#   1. Push perubahan ke main/feat branch seperti biasa.
+#   2. Bump versi:    npm version patch|minor|major
+#      (otomatis update package.json + commit + bikin tag vX.Y.Z)
+#   3. Push tag:      git push --follow-tags
+#   4. GitHub Action ini jalan, build, publish ke npm.
+#
+# Setup sekali (di GitHub web UI):
+#   Settings → Secrets and variables → Actions → New repository secret
+#     Name : NPM_TOKEN
+#     Value: (token dari https://www.npmjs.com/settings/<user>/tokens
+#             pilih "Automation" type biar bisa bypass 2FA di CI)
+#
+# Manual trigger juga tersedia (workflow_dispatch) — handy untuk re-publish
+# kalau npm publish gagal di run sebelumnya.
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry-run (npm publish --dry-run, tidak benar-benar upload)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  contents: read
+  id-token: write   # untuk npm provenance attestation (auditable supply chain)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20 (with npm registry auth)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies (CI mode)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+          else
+            npm install --no-audit --no-fund
+          fi
+
+      - name: Sanity — pack dry-run (verifikasi isi tarball)
+        run: |
+          echo "=== File yang akan masuk tarball ==="
+          npm pack --dry-run --json | node -e "
+            let d=''; process.stdin.on('data',c=>d+=c).on('end',()=>{
+              const j=JSON.parse(d)[0];
+              console.log('Package : '+j.name+'@'+j.version);
+              console.log('Size    : '+(j.size/1024).toFixed(1)+' KB packed');
+              console.log('Files   : '+j.entryCount);
+              const leaks = j.files.filter(f =>
+                /^package\/\.env(\$|\.[^e])|^package\/(logs|reports|deploy|node_modules|\.git)\//.test(f.path)
+              );
+              if (leaks.length) {
+                console.error('LEAK detected:', leaks);
+                process.exit(1);
+              }
+              console.log('Sanity  : ok');
+            });
+          "
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          DRY="${{ github.event.inputs.dry_run }}"
+          if [ "$DRY" = "true" ]; then
+            echo "=== DRY-RUN MODE ==="
+            npm publish --access public --dry-run --provenance
+          else
+            npm publish --access public --provenance
+          fi
+
+      - name: Print install instructions
+        if: success() && github.event.inputs.dry_run != 'true'
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          NAME=$(node -p "require('./package.json').name")
+          echo ""
+          echo "✓ Published $NAME@$VERSION ke npm registry."
+          echo ""
+          echo "User dapat install dengan:"
+          echo "  npm install -g $NAME"
+          echo ""
+          echo "Atau pin ke versi spesifik:"
+          echo "  npm install -g $NAME@$VERSION"
+          echo ""
+          echo "Cek: https://www.npmjs.com/package/$NAME"

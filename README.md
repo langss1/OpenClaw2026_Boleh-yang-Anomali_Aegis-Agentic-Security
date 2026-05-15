@@ -31,9 +31,37 @@ If you are an AI assistant working on this project, you **MUST** adhere to the f
 ---
 
 ## 🚀 Getting Started
-Jalankan perintah berikut di terminal Anda:
-- `aegis help` - Untuk melihat menu bantuan.
-- `aegis autopilot` - Untuk menjalankan pipeline penuh secara otonom.
+
+### Install via npm (1 baris, global)
+
+```bash
+npm install -g aegis-agentic-security
+```
+
+Setelah itu langsung bisa dipanggil dari direktori manapun:
+
+```bash
+aegis help                                    # menu bantuan
+aegis list                                    # daftar agent OpenClaw
+aegis run --agent pentest --task "scan http://localhost:3000 untuk SQLi"
+aegis run --agent qa --task "perbaiki kode di . secara aman"
+aegis autopilot                               # full pipeline (SecurityCode → QA → Pentest)
+```
+
+> Butuh **Node.js 18+**. Kalau `EACCES` saat install, set npm prefix ke home:
+> ```bash
+> npm config set prefix "$HOME/.npm-global"
+> echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+> ```
+
+### Install langsung dari GitHub (tanpa registry)
+
+```bash
+npm install -g github:langss1/OpenClaw2026_Boleh-yang-Anomali_Aegis-Agentic-Security
+```
+
+Cara install alternatif (installer script, dev mode, npx, alias SSH ke VPS) +
+instruksi publish ke npm untuk maintainer: lihat **[`docs/INSTALL.md`](./docs/INSTALL.md)**.
 
 ---
 

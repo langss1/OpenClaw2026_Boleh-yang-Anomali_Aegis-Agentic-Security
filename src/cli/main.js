@@ -11,12 +11,21 @@ const logo = `
 `;
 
 async function main() {
-    console.clear();
-    console.log(logo);
-
     const args = process.argv.slice(2);
     const command = args[0] || 'help';
     const targetDir = process.cwd();
+
+    // Delegasi ke OpenClaw shim untuk subcommand agent-oriented.
+    // Mode ini SKIP banner besar (logo) supaya output tetap clean — terutama
+    // saat output di-pipe / dipakai mode --json.
+    if (command === 'run' || command === 'list' || command === 'describe') {
+        const { main: openclawMain } = require('../../openclaw/bin/openclaw');
+        const code = await openclawMain([command, ...args.slice(1)]);
+        process.exit(typeof code === 'number' ? code : 0);
+    }
+
+    console.clear();
+    console.log(logo);
 
     try {
         switch (command) {
@@ -68,6 +77,18 @@ ${qaHelp}
 
 \x1b[1mAEGIS GATEWAY:\x1b[0m
   \x1b[31mautopilot\x1b[0m      Jalankan semua skill di atas secara berurutan.
+
+\x1b[1mOPENCLAW AGENT (pemanggilan ala OpenClaw):\x1b[0m
+  \x1b[36mlist\x1b[0m                                Daftar agent terdaftar
+  \x1b[36mdescribe\x1b[0m --agent <name>             Detail manifest agent
+  \x1b[36mrun\x1b[0m      --agent <name> --task "..." Jalankan agent dengan task alami
+  \x1b[36mrun\x1b[0m      --agent <name> --input '<json>'   Input JSON terstruktur
+
+  Contoh:
+    aegis run --agent pentest --task "scan http://localhost:3000 untuk SQLi cepat"
+    aegis run --agent pentest --target http://localhost:3000 --categories A01,A03
+    aegis list
+    aegis describe --agent pentest
                 `);
                 break;
             }

@@ -1,0 +1,45 @@
+# Build & dependency artifacts
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Local config & secrets
+.env
+.env.*
+!.env.example
+
+# Runtime / generated outputs (jangan masuk tarball npm)
+logs/
+reports/
+data/
+ai_cache/
+aegis-*-output/
+**/aegis-pentest-output/
+**/scan-reports/
+**/*.log
+
+# VPS deployment (bukan untuk konsumen CLI)
+deploy/
+Dockerfile
+.dockerignore
+docker-compose.yml
+install.sh
+
+# IDE & VCS
+.git/
+.github/
+.gitignore
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Test scratch
+test-output/
+coverage/
+.nyc_output/
+
+# Docs internal (progress / report) — opsional, di-keep di repo tapi tidak di npm
+docs/progres_*.md
+docs/REPORT_*.md

@@ -1,15 +1,27 @@
 {
-  "name": "aegis-professional",
-  "version": "3.0.0",
-  "description": "Unified Autonomous Security Ecosystem",
+  "name": "aegis-agentic-security",
+  "version": "3.1.0",
+  "description": "Aegis — autonomous security ecosystem with OpenClaw-style agents (Pentest, QA, SecurityCode) and embedded SaaS server.",
   "main": "src/cli/main.js",
   "bin": {
-    "aegis": "src/cli/main.js"
+    "aegis": "src/cli/main.js",
+    "openclaw": "openclaw/bin/openclaw.js"
   },
+  "files": [
+    "src/",
+    "openclaw/",
+    "server/",
+    "docs/INSTALL.md",
+    "docs/VPS_DEPLOYMENT.md",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "server": "node server/index.js",
     "server:dev": "node --watch server/index.js",
     "test:pentest": "node -e \"require('./openclaw/agents/Pentest').runPentestAgent({ targetDir: process.cwd(), targetUrl: 'http://localhost:8080', autoConfirm: 'never' }).then(() => process.exit(0)).catch(err => { console.error(err); process.exit(1); })\"",
+    "openclaw": "node openclaw/bin/openclaw.js",
+    "openclaw:list": "node openclaw/bin/openclaw.js list",
     "docker:build": "docker build -t aegis-saas:latest .",
     "docker:up": "docker compose up -d aegis",
     "docker:logs": "docker compose logs -f aegis",
@@ -20,7 +32,36 @@
     "deploy:systemd": "DEPLOY_MODE=systemd bash deploy/deploy.sh",
     "vps:cert": "bash deploy/issue-cert.sh",
     "vps:logs": "bash -c 'source .env && ssh -p ${VPS_PORT:-22} ${VPS_USER:-root}@${VPS_HOST} \"journalctl -u ${VPS_SERVICE_NAME:-aegis} -e -f\"'",
-    "vps:status": "bash -c 'source .env && ssh -p ${VPS_PORT:-22} ${VPS_USER:-root}@${VPS_HOST} \"systemctl status ${VPS_SERVICE_NAME:-aegis} || docker compose -f ${VPS_APP_DIR:-/opt/aegis}/docker-compose.yml ps\"'"
+    "vps:status": "bash -c 'source .env && ssh -p ${VPS_PORT:-22} ${VPS_USER:-root}@${VPS_HOST} \"systemctl status ${VPS_SERVICE_NAME:-aegis} || docker compose -f ${VPS_APP_DIR:-/opt/aegis}/docker-compose.yml ps\"'",
+    "prepublishOnly": "node -e \"const fs=require('fs');['src/cli/main.js','openclaw/bin/openclaw.js'].forEach(f=>{const c=fs.readFileSync(f,'utf8');if(!c.startsWith('#!/usr/bin/env node')){throw new Error('Missing shebang in '+f)}});console.log('[prepublish] bin shebangs ok')\""
+  },
+  "keywords": [
+    "aegis",
+    "openclaw",
+    "security",
+    "pentest",
+    "sast",
+    "owasp",
+    "agentic",
+    "ai-agent",
+    "cli",
+    "code-quality",
+    "vulnerability-scanner",
+    "autonomous-security"
+  ],
+  "author": "Boleh yang Anomali — OpenClaw 2026",
+  "license": "MIT",
+  "homepage": "https://github.com/langss1/OpenClaw2026_Boleh-yang-Anomali_Aegis-Agentic-Security#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/langss1/OpenClaw2026_Boleh-yang-Anomali_Aegis-Agentic-Security.git"
+  },
+  "bugs": {
+    "url": "https://github.com/langss1/OpenClaw2026_Boleh-yang-Anomali_Aegis-Agentic-Security/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
     "axios": "^1.16.1",
