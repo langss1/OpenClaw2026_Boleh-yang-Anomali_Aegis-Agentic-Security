@@ -50,7 +50,8 @@ async function createSnapTransaction({ orderId, plan, userId, customerEmail }) {
         },
         credit_card: { secure: true },
         callbacks: {
-            finish: require('../config').cfg.midtrans.finishUrl,
+            finish: cfg.midtrans.finishUrl,
+            error: cfg.midtrans.errorUrl,
         },
     };
 

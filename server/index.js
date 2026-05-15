@@ -5,6 +5,7 @@ try { require('dotenv').config(); } catch (_) { /* dotenv optional */ }
 
 const express = require('express');
 const { cfg, isMidtransConfigured } = require('./config');
+const { isDevPaymentSimEnabled } = require('./payment/handlers');
 const { registerRoutes } = require('./routes');
 
 function createApp() {
@@ -34,19 +35,21 @@ function start() {
     app.listen(cfg.port, cfg.host, () => {
         const bind = `${cfg.host}:${cfg.port}`;
         console.log(`\n\x1b[32m[AEGIS SaaS]\x1b[0m bound to ${bind}`);
-        console.log(`  Public URL: ${cfg.publicUrl}`);
+        console.log(`  Web URL   : ${cfg.publicUrl}  (Next.js — npm run web:dev)`);
         console.log(`  Midtrans  : ${isMidtransConfigured() ? `configured (${cfg.midtrans.isProduction ? 'PRODUCTION' : 'sandbox'})` : '\x1b[33mNOT CONFIGURED\x1b[0m'}`);
         console.log(`  Plans     : ${cfg.plans.map(p => p.id).join(', ')}`);
-        console.log(`  Web pages :`);
-        console.log(`    GET  /                          (landing)`);
-        console.log(`    GET  /pricing                   (paket berlangganan)`);
-        console.log(`    GET  /success?order_id=...      (after-payment landing)`);
         console.log(`  API       :`);
         console.log(`    GET  /api/health`);
         console.log(`    GET  /api/plans`);
         console.log(`    GET  /api/subscription/:userId`);
+        console.log(`    GET  /api/order/:orderId`);
         console.log(`    POST /api/payment/create        body={ userId, planId }`);
-        console.log(`    POST /api/payment/webhook       (Midtrans notification)\n`);
+        console.log(`    POST /api/payment/webhook       (Midtrans notification)`);
+        if (isDevPaymentSimEnabled()) {
+            console.log(`    POST /api/payment/dev-simulate  (DEV — tanpa Midtrans)\n`);
+        } else {
+            console.log('');
+        }
     });
 }
 

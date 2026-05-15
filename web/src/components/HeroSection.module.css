@@ -1,0 +1,125 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #030000;
+  overflow: hidden;
+}
+
+.containerCentered {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 40px;
+}
+
+.headlineCentered {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(40px, 8vw, 84px);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffffff;
+  margin-bottom: 32px;
+  letter-spacing: -2px;
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(to bottom, #ffffff, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animateGradient {
+  background: linear-gradient(
+    -45deg, 
+    #ffffff, 
+    #ff3333, 
+    #f0f0f0, 
+    #ff0000
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFlow 12s ease infinite;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.revealContent {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.revealContent.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.subtextCentered {
+  font-family: var(--font-poppins);
+  font-size: clamp(18px, 2vw, 24px);
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 700px;
+  margin: 0 auto 48px;
+  line-height: 1.6;
+}
+
+.actionsCentered {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Redefined Large Buttons */
+:global(.btn-primary-large) {
+  padding: 18px 40px;
+  background: #ffffff;
+  color: #000000;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+:global(.btn-primary-large:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+}
+
+:global(.btn-outline-large) {
+  padding: 18px 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+:global(.btn-outline-large:hover) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}

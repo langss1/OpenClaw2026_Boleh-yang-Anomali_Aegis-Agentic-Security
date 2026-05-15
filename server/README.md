@@ -47,7 +47,7 @@ npm run server:dev     # auto-reload saat file berubah
 Output:
 
 ```
-[AEGIS SaaS] listening on http://localhost:3000
+[AEGIS SaaS] bound to 0.0.0.0:4000  (UI marketing: Next.js di web/ port 3000)
   Midtrans  : configured (sandbox)
   Plans     : free, pro, enterprise
 ```
