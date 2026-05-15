@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
@@ -29,9 +29,6 @@ function PricingContent() {
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const [authReady, setAuthReady] = useState(false);
 
-  const devSimulate = process.env.NEXT_PUBLIC_DEV_PAYMENT_SIM === 'true';
-  const devAuthSim = process.env.NEXT_PUBLIC_DEV_AUTH_SIM === 'true';
-
   const resolveUser = useCallback(async () => {
     const user = await getClientAuthUser();
     setAuthUser(user);
@@ -57,52 +54,14 @@ function PricingContent() {
         setPlans(list);
       })
       .catch(() =>
-        setStatus(
-          'Gagal memuat paket. Terminal 1: npm run server (port 4000). Terminal 2: cd web && npm run dev.',
-        ),
+        setStatus('Gagal memuat paket. Pastikan API berjalan di port 4000 (npm run server).'),
       );
 
     resolveUser().finally(() => setAuthReady(true));
   }, [resolveUser]);
 
-  const effectiveUserId = authUser?.id || (devSimulate ? 'dev-user' : null);
-
-  const simulatePay = async (planId: string) => {
-    if (!effectiveUserId) {
-      setStatus('Masuk dulu lewat /login (atau tombol Dev Login).');
-      return;
-    }
-    setBusyPlanId(planId);
-    setStatus('Simulasi pembayaran (dev)...');
-    try {
-      const res = await fetch('/api/payment/dev-simulate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: effectiveUserId, planId }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        const msg = data.error || res.statusText;
-        setStatus(
-          msg.includes('tidak ditemukan')
-            ? 'API belum update. Hentikan lalu jalankan ulang: npm run server (harus ada POST /api/payment/dev-simulate di log).'
-            : `Error: ${msg}`,
-        );
-        setBusyPlanId(null);
-        return;
-      }
-      if (data.orderId) sessionStorage.setItem('aegis_pending_order', data.orderId);
-      window.location.assign(
-        data.successUrl || `/success?order_id=${encodeURIComponent(data.orderId)}`,
-      );
-    } catch (e: unknown) {
-      setStatus(`Network error: ${e instanceof Error ? e.message : String(e)}`);
-      setBusyPlanId(null);
-    }
-  };
-
   const subscribe = async (planId: string) => {
-    if (!effectiveUserId) {
+    if (!authUser?.id) {
       setStatus('Masuk dulu lewat /login.');
       return;
     }
@@ -112,7 +71,7 @@ function PricingContent() {
       const res = await fetch('/api/payment/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: effectiveUserId, planId }),
+        body: JSON.stringify({ userId: authUser.id, planId }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -120,7 +79,7 @@ function PricingContent() {
         setBusyPlanId(null);
         return;
       }
-      setStatus('Membuka Midtrans… batalkan/gagal akan kembali ke halaman ini.');
+      setStatus('Membuka Midtransâ€¦ batalkan/gagal akan kembali ke halaman ini.');
       if (data.orderId) sessionStorage.setItem('aegis_pending_order', data.orderId);
       window.location.assign(data.redirectUrl);
     } catch (e: unknown) {
@@ -150,7 +109,7 @@ function PricingContent() {
             zIndex: 3,
           }}
         >
-          ← Beranda
+          â† Beranda
         </Link>
 
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
@@ -158,13 +117,12 @@ function PricingContent() {
             Pilih paket Aegis
           </h1>
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)' }}>
-            License CLI — aktivasi via Midtrans sandbox.
+            License CLI â€” aktivasi via Midtrans.
           </p>
           {authReady && authUser && (
             <p style={{ fontSize: 12, color: 'rgba(34,197,94,0.8)', marginTop: 10 }}>
               Masuk sebagai: <code style={{ color: '#86efac' }}>{authUser.email || authUser.id}</code>
-              {authUser.source === 'dev' && ' (dev)'}
-              {' · '}
+              {' Â· '}
               <button
                 type="button"
                 onClick={() => signOut()}
@@ -181,21 +139,12 @@ function PricingContent() {
               </button>
             </p>
           )}
-          {authReady && !effectiveUserId && (
+          {authReady && !authUser && (
             <p style={{ fontSize: 13, color: '#fbbf24', marginTop: 12 }}>
               <Link href="/login?next=/pricing" style={{ color: '#fca5a5' }}>
                 Masuk
               </Link>{' '}
               untuk subscribe berbayar.
-              {devAuthSim && (
-                <>
-                  {' '}
-                  atau{' '}
-                  <Link href="/login?next=/pricing" style={{ color: '#fde68a' }}>
-                    Dev Login
-                  </Link>
-                </>
-              )}
             </p>
           )}
         </div>
@@ -243,7 +192,7 @@ function PricingContent() {
                         padding: '6px 0',
                       }}
                     >
-                      <span style={{ color: '#ef4444' }}>✓</span>
+                      <span style={{ color: '#ef4444' }}>âœ“</span>
                       {f}
                     </li>
                   ))}
@@ -260,26 +209,14 @@ function PricingContent() {
                     Pakai Gratis (CLI)
                   </button>
                 ) : (
-                  <>
-                    <button
-                      type="button"
-                      className={styles.btnPrimary}
-                      disabled={!!busyPlanId}
-                      onClick={() => subscribe(plan.id)}
-                    >
-                      {busy ? 'Memproses...' : 'Subscribe'}
-                    </button>
-                    {devSimulate && (
-                      <button
-                        type="button"
-                        className={styles.btnDev}
-                        disabled={!!busyPlanId}
-                        onClick={() => simulatePay(plan.id)}
-                      >
-                        {busy ? 'Memproses...' : 'Simulasi bayar (dev, tanpa Midtrans)'}
-                      </button>
-                    )}
-                  </>
+                  <button
+                    type="button"
+                    className={styles.btnPrimary}
+                    disabled={!!busyPlanId}
+                    onClick={() => subscribe(plan.id)}
+                  >
+                    {busy ? 'Memproses...' : 'Subscribe'}
+                  </button>
                 )}
               </div>
             );
@@ -309,3 +246,4 @@ export default function PricingPage() {
     </Suspense>
   );
 }
+

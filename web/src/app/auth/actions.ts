@@ -3,11 +3,10 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient, isSupabaseConfigured } from '@/utils/supabase/server';
-import { clearDevSession } from './dev-actions';
 
 export async function login(formData: FormData) {
   if (!isSupabaseConfigured()) {
-    redirect('/login?error=' + encodeURIComponent('Supabase belum dikonfigurasi. Isi web/.env.local atau pakai Dev Login.'));
+    redirect('/login?error=' + encodeURIComponent('Supabase belum dikonfigurasi. Isi web/.env.local.'));
   }
 
   const supabase = await createClient();
@@ -61,38 +60,7 @@ export async function signup(formData: FormData) {
   redirect('/login?message=' + encodeURIComponent('Cek email untuk konfirmasi akun.'));
 }
 
-export async function signInWithGitHub() {
-  if (!isSupabaseConfigured()) {
-    redirect('/login?error=' + encodeURIComponent('Supabase belum dikonfigurasi untuk OAuth.'));
-  }
-
-  const supabase = await createClient();
-  if (!supabase) {
-    redirect('/login?error=' + encodeURIComponent('Gagal membuat klien Supabase.'));
-  }
-
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  const callbackUrl = `${siteUrl.replace(/\/$/, '')}/auth/callback`;
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'github',
-    options: {
-      redirectTo: callbackUrl,
-      scopes: 'repo',
-    },
-  });
-
-  if (error) {
-    redirect('/login?error=' + encodeURIComponent(error.message));
-  }
-
-  if (data.url) {
-    redirect(data.url);
-  }
-}
-
 export async function signOut() {
-  await clearDevSession();
   if (isSupabaseConfigured()) {
     try {
       const supabase = await createClient();

@@ -26,4 +26,3 @@ Jalankan `schema.sql` di SQL Editor jika ingin menyimpan metadata user.
 
 - Login/register → Supabase Auth
 - `user.id` dipakai sebagai `userId` di `/api/payment/create` dan subscription JSON di server
-- Tanpa Supabase: gunakan **Dev Login** di `/login`

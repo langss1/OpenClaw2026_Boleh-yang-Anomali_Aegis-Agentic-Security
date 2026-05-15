@@ -4,83 +4,6 @@ const { cfg, getPlanById, isMidtransConfigured } = require('../config');
 const midtrans = require('./midtrans');
 const store = require('../subscription/store');
 
-function isDevPaymentSimEnabled() {
-    if (process.env.DEV_PAYMENT_SIM === 'true') return true;
-    if (process.env.DEV_PAYMENT_SIM === 'false') return false;
-    return process.env.NODE_ENV !== 'production';
-}
-
-async function simulateDevPayment(req, res) {
-    if (!isDevPaymentSimEnabled()) {
-        return res.status(403).json({
-            error: 'Simulasi dev nonaktif. Set DEV_PAYMENT_SIM=true di .env (root).',
-        });
-    }
-
-    try {
-        const { userId, planId, orderId } = req.body || {};
-
-        let oid = typeof orderId === 'string' ? orderId : null;
-        let order = oid ? store.getOrder(oid) : null;
-
-        if (!order) {
-            if (!userId || typeof userId !== 'string') {
-                return res.status(400).json({ error: 'userId wajib (string).' });
-            }
-            if (!planId || typeof planId !== 'string') {
-                return res.status(400).json({ error: 'planId wajib (string), atau kirim orderId pending.' });
-            }
-
-            const plan = getPlanById(planId);
-            if (!plan) {
-                return res.status(400).json({ error: `Plan "${planId}" tidak ditemukan.` });
-            }
-            if (plan.priceIdr === 0) {
-                return res.status(400).json({ error: 'Plan gratis tidak perlu simulasi bayar.' });
-            }
-
-            oid = store.generateOrderId(plan.id);
-            store.createPendingOrder({ userId, planId: plan.id, orderId: oid });
-            order = store.getOrder(oid);
-        }
-
-        if (order.status === 'paid') {
-            const subscription = store.getSubscription(order.userId);
-            return res.json({
-                ok: true,
-                simulated: true,
-                orderId: oid,
-                paid: true,
-                alreadyActive: true,
-                subscription,
-            });
-        }
-
-        const subscription = store.activateSubscription({
-            orderId: oid,
-            paymentMeta: {
-                simulated: true,
-                paymentType: 'dev_sim',
-                transactionStatus: 'settlement',
-            },
-        });
-
-        console.log(`[PAYMENT][DEV] Simulasi bayar order=${oid} user=${subscription.userId} license=${subscription.licenseKey}`);
-
-        return res.json({
-            ok: true,
-            simulated: true,
-            orderId: oid,
-            paid: true,
-            subscription,
-            successUrl: `/success?order_id=${encodeURIComponent(oid)}`,
-        });
-    } catch (err) {
-        console.error('[PAYMENT][DEV] simulate error:', err.message);
-        return res.status(500).json({ error: err.message });
-    }
-}
-
 async function createTransaction(req, res) {
     try {
         const { userId, planId, customerEmail } = req.body || {};
@@ -175,4 +98,4 @@ async function handleWebhook(req, res) {
     }
 }
 
-module.exports = { createTransaction, handleWebhook, simulateDevPayment, isDevPaymentSimEnabled };
+module.exports = { createTransaction, handleWebhook };

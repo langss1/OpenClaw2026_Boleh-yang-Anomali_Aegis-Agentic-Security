@@ -15,7 +15,6 @@ function registerRoutes(app) {
 
     api.post('/payment/create', paymentHandlers.createTransaction);
     api.post('/payment/webhook', paymentHandlers.handleWebhook);
-    api.post('/payment/dev-simulate', paymentHandlers.simulateDevPayment);
 
     api.get('/order/:orderId', async (req, res) => {
         const orderId = req.params.orderId;

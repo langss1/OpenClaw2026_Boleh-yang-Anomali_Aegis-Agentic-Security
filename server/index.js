@@ -5,7 +5,6 @@ try { require('dotenv').config(); } catch (_) { /* dotenv optional */ }
 
 const express = require('express');
 const { cfg, isMidtransConfigured } = require('./config');
-const { isDevPaymentSimEnabled } = require('./payment/handlers');
 const { registerRoutes } = require('./routes');
 
 function createApp() {
@@ -44,12 +43,7 @@ function start() {
         console.log(`    GET  /api/subscription/:userId`);
         console.log(`    GET  /api/order/:orderId`);
         console.log(`    POST /api/payment/create        body={ userId, planId }`);
-        console.log(`    POST /api/payment/webhook       (Midtrans notification)`);
-        if (isDevPaymentSimEnabled()) {
-            console.log(`    POST /api/payment/dev-simulate  (DEV — tanpa Midtrans)\n`);
-        } else {
-            console.log('');
-        }
+        console.log(`    POST /api/payment/webhook       (Midtrans notification)\n`);
     });
 }
 

@@ -39,7 +39,6 @@
 }
 
 .btnPrimary,
-.btnDev,
 .btnFree {
   width: 100%;
   padding: 14px;
@@ -61,17 +60,6 @@
 .btnPrimary:disabled {
   opacity: 0.55;
   cursor: not-allowed;
-}
-
-.btnDev {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  border: 1px dashed rgba(251, 191, 36, 0.4);
-  background: transparent;
-  color: #fbbf24;
 }
 
 .btnFree {

@@ -7,23 +7,14 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import styles from './login.module.css';
 import ParticleField from '@/components/ParticleField';
-import { login, signInWithGitHub } from '../auth/actions';
-import { devLogin } from '../auth/dev-actions';
-
-const devAuthSim = process.env.NEXT_PUBLIC_DEV_AUTH_SIM === 'true';
+import { login } from '../auth/actions';
 
 function LoginForm() {
-  const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
   const message = searchParams.get('message');
   const next = searchParams.get('next') || '/pricing';
-
-  const handleGitHubLogin = async () => {
-    setLoading(true);
-    await signInWithGitHub();
-  };
 
   const copyCommand = () => {
     navigator.clipboard.writeText('npx aegis-security@latest init');
@@ -69,37 +60,9 @@ function LoginForm() {
             </button>
           </form>
 
-          <div className={styles.divider}>
-            <span>ATAU</span>
-          </div>
-
-          <button type="button" className={styles.githubBtn} onClick={handleGitHubLogin} disabled={loading}>
-            {loading ? <div className={styles.spinner} /> : 'Lanjut dengan GitHub'}
-          </button>
-
           <p className={styles.footerText}>
             Belum punya akun? <Link href="/register">Daftar</Link>
           </p>
-
-          {devAuthSim && (
-            <>
-              <div className={styles.divider} style={{ marginTop: 20 }}>
-                <span>DEV</span>
-              </div>
-              <form action={devLogin} className={styles.form}>
-                <input type="hidden" name="next" value={next} />
-                <input type="hidden" name="userId" value="dev-user" />
-                <input type="hidden" name="email" value="dev@aegis.local" />
-                <button
-                  type="submit"
-                  className={styles.githubBtn}
-                  style={{ borderColor: 'rgba(251,191,36,0.35)', color: '#fbbf24' }}
-                >
-                  Masuk sebagai Dev (tanpa Supabase)
-                </button>
-              </form>
-            </>
-          )}
         </div>
 
         <div className={styles.card}>
@@ -130,3 +93,4 @@ export default function LoginPage() {
     </Suspense>
   );
 }
+

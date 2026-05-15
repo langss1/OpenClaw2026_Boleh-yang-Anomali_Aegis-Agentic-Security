@@ -7,32 +7,41 @@ import styles from './Developer.module.css'
 
 const contributors = [
   {
-    name: "Gilang Wasis",
-    role: "Co-founder of Aegis",
-    bio: "Developing, Researcher, Engineer, and Founder of Aegis.",
+    name: 'Gilang Wasis',
+    role: 'Co-founder · Lead Engineer',
+    bio: 'Arsitektur agentik, integrasi OpenClaw, dan fondasi teknis ekosistem Aegis.',
     links: [
-      { type: "github", url: "https://github.com" },
-      { type: "linkedin", url: "https://linkedin.com" }
-    ]
+      { type: 'github', url: 'https://github.com' },
+      { type: 'linkedin', url: 'https://linkedin.com' },
+    ],
   },
   {
-    name: "Gde Radeva",
-    role: "Co-founder of Aegis",
-    bio: "Researcher, Operation, and Founder of Aegis.",
+    name: 'Gde Radeva',
+    role: 'Co-founder · Security Research',
+    bio: 'Riset kerentanan, strategi pentest otonom, dan standar keamanan produk.',
     links: [
-      { type: "github", url: "https://github.com" },
-      { type: "linkedin", url: "https://linkedin.com" }
-    ]
+      { type: 'github', url: 'https://github.com' },
+      { type: 'linkedin', url: 'https://linkedin.com' },
+    ],
   },
   {
-    name: "Defender",
-    role: "Co-founder of Aegis",
-    bio: "Developing, Researcher, Operation, and Founder of Aegis.",
+    name: 'Defender',
+    role: 'Co-founder · Product & Operations',
+    bio: 'Operasional produk, koordinasi tim, dan pengembangan bisnis platform.',
     links: [
-      { type: "github", url: "https://github.com" },
-      { type: "linkedin", url: "https://linkedin.com" }
-    ]
-  }
+      { type: 'github', url: 'https://github.com' },
+      { type: 'linkedin', url: 'https://linkedin.com' },
+    ],
+  },
+  {
+    name: 'Alwan',
+    role: 'Platform Engineer · SaaS & Web',
+    bio: 'Marketing web, auth Supabase, integrasi Midtrans, dan API berlangganan Aegis.',
+    links: [
+      { type: 'github', url: 'https://github.com' },
+      { type: 'linkedin', url: 'https://linkedin.com' },
+    ],
+  },
 ]
 
 const Icons = {
@@ -59,7 +68,7 @@ export default function DeveloperPage() {
         <div className={styles.intro}>
           <h1 className={styles.title}>The Minds Behind Aegis</h1>
           <p className={styles.desc}>
-            Meet the founders and researchers dedicated to building a safer, autonomous future.
+            Tim pendiri dan engineer di balik platform keamanan otonom untuk developer modern.
           </p>
         </div>
 

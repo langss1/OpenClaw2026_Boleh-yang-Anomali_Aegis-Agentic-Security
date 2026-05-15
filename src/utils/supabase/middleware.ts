@@ -6,7 +6,6 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
-  // Skip Supabase if credentials not configured (for local development)
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return supabaseResponse
   }
@@ -32,21 +31,9 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // IMPORTANT: Avoid writing any logic between createServerClient and
-  // supabase.auth.getUser(). A simple mistake can make it very hard to debug
-  // issues with users being randomly logged out.
-
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
-  // Skip auth redirect in development mode or if SKIP_AUTH is set
-  const isDev = process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
-  const skipAuth = process.env.SKIP_AUTH === 'true' || isDev
-
-  if (isDev || skipAuth) {
-    return supabaseResponse
-  }
 
   if (
     !user &&
@@ -58,19 +45,10 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith('/users') &&
     request.nextUrl.pathname !== '/'
   ) {
-    // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
-
-  // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
-  // creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Or even better, just modify supabaseResponse directly!
 
   return supabaseResponse
 }
