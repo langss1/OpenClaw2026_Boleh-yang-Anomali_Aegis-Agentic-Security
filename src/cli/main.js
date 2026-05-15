@@ -21,32 +21,32 @@ async function main() {
     try {
         switch (command) {
             case 'SecurityCode':
-                const { runSecurity } = require('../../openclaw/skills/SecurityCode/index');
+                const { runSecurity } = require('../modules/SecurityCode');
                 await runSecurity(targetDir);
                 break;
             case 'QA':
-                const { runSecurity: getFindings } = require('../../openclaw/skills/SecurityCode/index');
+                const { runSecurity: getFindings } = require('../modules/SecurityCode');
                 const findingsT = await getFindings(targetDir);
-                const { runQA } = require('../../openclaw/skills/QA/index');
+                const { runQA } = require('../modules/QA');
                 await runQA(targetDir, findingsT);
                 break;
             case 'LocalPentest':
-                const { runSecurity: getFindingsP } = require('../../openclaw/skills/SecurityCode/index');
+                const { runSecurity: getFindingsP } = require('../modules/SecurityCode');
                 const findingsP = await getFindingsP(targetDir);
-                const { runPentest } = require('../../openclaw/skills/LocalPentest/index');
+                const { runPentest } = require('../modules/LocalPentest');
                 await runPentest(targetDir, findingsP);
                 break;
             case 'Development':
-                const { runDevelopment } = require('../../openclaw/skills/Development/index');
+                const { runDevelopment } = require('../modules/Development');
                 await runDevelopment(targetDir);
                 break;
             case 'Ask':
-                const { runAsk } = require('../../openclaw/skills/Ask/index');
+                const { runAsk } = require('../modules/Ask');
                 const q = args.slice(1).join(' ') || 'Bagaimana status keamanan saya?';
                 await runAsk(targetDir, q);
                 break;
             case 'autopilot':
-                const Orchestrator = require('../../openclaw/gateway/index');
+                const Orchestrator = require('../core/orchestrator');
                 await new Orchestrator(targetDir).runFullPipeline();
                 break;
             case 'help':

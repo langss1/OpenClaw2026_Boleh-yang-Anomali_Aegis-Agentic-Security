@@ -2,7 +2,7 @@ const ReconAgent = require('../agents/recon_agent');
 const SecurityAgent = require('../agents/security_agent');
 const PentestAgent = require('../agents/pentest_agent');
 const PatchAgent = require('../agents/patch_agent');
-const ValidationAgent = require('../agents/validation_agent');
+
 
 class Orchestrator {
     constructor(targetDir) {
@@ -17,8 +17,7 @@ class Orchestrator {
 
         if (findings.length > 0) {
             await new PentestAgent(this.targetDir).run(findings);
-            const healed = await new PatchAgent(this.targetDir).run(findings);
-            await new ValidationAgent(this.targetDir).run(healed);
+            await new PatchAgent(this.targetDir).run(findings);
         }
 
         console.log(`\n\x1b[31m[ PIPELINE COMPLETED ]\x1b[0m\n`);
