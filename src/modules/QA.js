@@ -18,7 +18,7 @@ async function runQA(targetDir, findings) {
     
     if (!findings || findings.length === 0) {
         console.log(`\x1b[32m[QA MODULE]\x1b[0m Tidak ada kerentanan yang perlu diperbaiki.\n`);
-        return;
+        return { healed: 0, total: 0, score: 100 };
     }
 
     console.log(`\x1b[33m[QA MODULE]\x1b[0m Ditemukan ${findings.length} isu keamanan yang bisa di-fix.\n`);
@@ -50,11 +50,13 @@ async function runQA(targetDir, findings) {
     if (confirmedFindings.length > 0) {
         const patch = new PatchAgent(targetDir);
         const healed = await patch.run(confirmedFindings);
-        
+
         const score = Math.round((1 - ((findings.length - healed) / findings.length)) * 100);
         console.log(`\n\x1b[32m[QA MODULE]\x1b[0m QA selesai. Security Score: ${score}/100`);
+        return { healed, total: findings.length, score };
     } else {
         console.log(`\n\x1b[33m[QA MODULE]\x1b[0m Tidak ada perbaikan yang diterapkan.`);
+        return { healed: 0, total: findings.length, score: 0 };
     }
 }
 

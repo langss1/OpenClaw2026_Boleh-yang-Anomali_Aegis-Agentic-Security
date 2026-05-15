@@ -1,0 +1,64 @@
+{
+  "name": "QA",
+  "version": "1.1.0",
+  "title": "Aegis QA Skill",
+  "description": "Auto-Fix terkontrol untuk celah keamanan yang sudah ditemukan oleh skill SecurityCode. Wajib konfirmasi manusia per temuan sebelum perubahan kode diterapkan. Semua paths & protokol diambil dari manifest ini.",
+  "module": "QA",
+  "entry": "./index.js",
+  "handler": "runQASkill",
+  "owner": "agent:QA",
+  "protocols": {
+    "humanInTheLoop": true,
+    "reportRequired": true,
+    "progressLog": "docs/progres_QA.md",
+    "report": "docs/REPORT_QA.md",
+    "logDir": "logs/QA",
+    "logFilePrefix": "run-",
+    "logFileExtension": ".log"
+  },
+  "implementation": {
+    "modulePath": "../../../src/modules/QA",
+    "moduleHandler": "runQA"
+  },
+  "input": {
+    "targetDir": {
+      "type": "string",
+      "required": true,
+      "description": "Direktori proyek target yang akan diperbaiki."
+    },
+    "findings": {
+      "type": "array",
+      "required": true,
+      "description": "Daftar temuan kerentanan dari skill SecurityCode. Skill QA TIDAK melakukan pemindaian; ia hanya memperbaiki temuan yang diberikan upstream.",
+      "itemShape": {
+        "file": "string",
+        "line": "number",
+        "issue": "string",
+        "severity": "string",
+        "currentCode": "string",
+        "fixedCode": "string",
+        "description": "string"
+      }
+    }
+  },
+  "output": {
+    "healed": "number",
+    "total": "number",
+    "score": "number",
+    "reportFile": "string | null",
+    "logFile": "string | null"
+  },
+  "constraints": [
+    "Tidak mengubah kode tanpa konfirmasi eksplisit pengguna (lihat agent.md §3).",
+    "Tidak menjalankan pemindaian SAST — itu tanggung jawab skill SecurityCode.",
+    "Wajib membuat backup .bak sebelum patch (didelegasikan ke PatchAgent)."
+  ],
+  "messages": {
+    "errorTargetDirMissing": "[QA SKILL] \"targetDir\" wajib diisi (string).",
+    "errorTargetDirNotFound": "[QA SKILL] targetDir tidak ditemukan: {targetDir}",
+    "errorFindingsInvalid": "[QA SKILL] \"findings\" harus berupa array hasil skill SecurityCode. Skill QA tidak melakukan pemindaian sendiri (lihat docs/agent.md).",
+    "infoEmptyFindings": "[QA SKILL] Tidak ada temuan dari upstream. Selesai tanpa perubahan.",
+    "infoLogStored": "[QA SKILL] Log tersimpan: {logFile}"
+  },
+  "scope": "qa-only"
+}

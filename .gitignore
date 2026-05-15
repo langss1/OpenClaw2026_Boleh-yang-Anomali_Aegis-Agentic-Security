@@ -8,3 +8,9 @@ build/
 .env
 Aegisfix/
 openclaw/.git/
+
+logs/**/*
+!logs/
+!logs/*/
+!logs/**/.gitkeep
+

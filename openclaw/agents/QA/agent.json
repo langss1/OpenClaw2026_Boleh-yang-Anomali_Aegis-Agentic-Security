@@ -1,0 +1,74 @@
+{
+  "name": "QA",
+  "version": "1.1.0",
+  "title": "Aegis QA Agent",
+  "role": "Auto-Fix Specialist",
+  "description": "Agen yang bertanggung jawab atas remediasi otomatis kerentanan kode. Memakai skill QA untuk eksekusi, dengan kebijakan keputusan eksplisit (human-in-the-loop atau autoConfirm). Semua aturan diambil dari manifest ini — runtime hanya menjalankan.",
+  "owner": "agent:QA",
+  "entry": "./index.js",
+  "handler": "runQAAgent",
+  "skills": [
+    {
+      "name": "QA",
+      "path": "../../skills/QA",
+      "required": true
+    }
+  ],
+  "policies": {
+    "humanInTheLoop": "default",
+    "autoConfirm": {
+      "modes": ["never", "safe-only", "all"],
+      "default": "never",
+      "notes": "Mode 'all' hanya boleh dipakai dari pipeline CI dengan flag eksplisit."
+    },
+    "safePatch": {
+      "enabled": true,
+      "notes": "Aturan yang menentukan finding mana yang aman di-auto-fix saat mode 'safe-only'. Semua kondisi harus terpenuhi.",
+      "requireFixedCodePattern": "process\\.env\\.",
+      "allowedSeverities": ["Critical", "High"],
+      "denyPathPattern": "\\b(routes|api|middleware|auth)\\b"
+    },
+    "rollbackOnFailure": true,
+    "respectFindingSeverity": true
+  },
+  "ai": {
+    "enabled": false,
+    "backend": null,
+    "supportedBackends": ["ollama", "openai", "deepseek", "mock"],
+    "envVar": "AEGIS_AI_BACKEND",
+    "systemPromptFile": "./system_prompt.md",
+    "notes": "Backend AI di-load lazily saat agent perlu menghasilkan patch atau penjelasan kontekstual. Default disabled — agent berjalan rule-based mengikuti finding dari SecurityCode."
+  },
+  "io": {
+    "input": {
+      "targetDir": "string (required)",
+      "findings": "Finding[] (required; jika kosong agent selesai tanpa perubahan)",
+      "autoConfirm": "'never' | 'safe-only' | 'all' (default: 'never')",
+      "onEvent": "function (optional; dipanggil tiap milestone untuk gateway OpenClaw)"
+    },
+    "output": {
+      "runId": "string (UUID per invocation)",
+      "healed": "number",
+      "total": "number",
+      "score": "number",
+      "reportFile": "string | null",
+      "logFile": "string | null"
+    }
+  },
+  "events": {
+    "start": "agent:start",
+    "finding": "agent:finding",
+    "decision": "agent:decision",
+    "patchApplied": "agent:patch-applied",
+    "patchRejected": "agent:patch-rejected",
+    "complete": "agent:complete",
+    "error": "agent:error"
+  },
+  "messages": {
+    "errorTargetDirMissing": "[QA AGENT] targetDir wajib diisi.",
+    "errorFindingsInvalid": "[QA AGENT] findings harus array.",
+    "errorAutoConfirmInvalid": "[QA AGENT] autoConfirm tidak valid: {value}. Pilih salah satu: {modes}",
+    "errorTargetDirNotFound": "[QA AGENT] targetDir tidak ditemukan: {targetDir}"
+  },
+  "scope": "qa-only"
+}
