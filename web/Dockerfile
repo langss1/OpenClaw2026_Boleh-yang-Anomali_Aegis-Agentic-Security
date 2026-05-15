@@ -1,25 +1,34 @@
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN if [ -f package-lock.json ]; then \
+      npm ci --no-audit --no-fund \
+        || (echo ">>> npm ci gagal, fallback ke npm install" \
+            && npm install --no-audit --no-fund); \
+    else \
+      npm install --no-audit --no-fund; \
+    fi
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
+# Rewrite /api/* → Express di jaringan Docker (lihat web/next.config.ts)
+ARG API_URL=http://aegis:4000
+ENV API_URL=${API_URL}
+ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
@@ -29,5 +38,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 EXPOSE 3000
-ENV PORT 3000
+ENV PORT=3000 \
+    HOSTNAME=0.0.0.0
 CMD ["node", "server.js"]

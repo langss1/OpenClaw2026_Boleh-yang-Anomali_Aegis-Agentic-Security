@@ -1,4 +1,6 @@
 services:
+  # Backend SaaS (Midtrans, subscription, health) — hanya jaringan internal.
+  # Next.js (web) mem-proxy /api/* ke sini (lihat web/next.config.ts & API_URL).
   aegis:
     build:
       context: .
@@ -11,14 +13,14 @@ services:
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
-      PORT: 3000
-    ports:
-      - "127.0.0.1:3000:3000"
+      PORT: 4000
+    expose:
+      - "4000"
     volumes:
       - aegis_data:/app/server/subscription/data
       - aegis_logs:/app/logs
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3000/api/health"]
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:4000/api/health"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -26,16 +28,41 @@ services:
     networks:
       - aegis_net
 
+  # Marketing / UI (Next.js). Port 3000 = wajah publik ke browser.
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        API_URL: http://aegis:4000
+    image: aegis-web:latest
+    container_name: aegis-web
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+      API_URL: http://aegis:4000
+    ports:
+      - "0.0.0.0:3000:3000"
+    depends_on:
+      aegis:
+        condition: service_healthy
+    networks:
+      - aegis_net
+
   # Reverse proxy + TLS. Aktifkan dengan profile 'proxy'.
   #   docker compose --profile proxy up -d
-  # Pastikan VPS_DOMAIN sudah point ke IP VPS dan port 80/443 terbuka.
+  # Traffic HTTP diarahkan ke **web** (Next). /api/* direwrite ke aegis di dalam Next.
   nginx:
     image: nginx:1.27-alpine
     container_name: aegis-nginx
     restart: unless-stopped
     profiles: ["proxy"]
     depends_on:
-      - aegis
+      - web
     ports:
       - "80:80"
       - "443:443"

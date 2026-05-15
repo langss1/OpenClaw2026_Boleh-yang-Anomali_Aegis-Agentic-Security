@@ -67,8 +67,8 @@ push_env() {
 deploy_docker() {
   log "Mode: docker compose"
   ssh_run "cd ${VPS_APP_DIR} && docker compose pull 2>/dev/null || true"
-  ssh_run "cd ${VPS_APP_DIR} && docker compose build aegis"
-  ssh_run "cd ${VPS_APP_DIR} && docker compose up -d aegis"
+  ssh_run "cd ${VPS_APP_DIR} && docker compose build aegis web"
+  ssh_run "cd ${VPS_APP_DIR} && docker compose up -d aegis web"
   ssh_run "cd ${VPS_APP_DIR} && docker compose ps"
 }
 
@@ -85,9 +85,16 @@ deploy_systemd() {
 
 health_check() {
   log "Health check via SSH ..."
-  ssh_run "curl -fsS http://127.0.0.1:${PORT:-3000}/api/health" \
-    && log "OK — service merespons." \
-    || warn "Health check gagal. Lihat log: 'journalctl -u ${VPS_SERVICE_NAME} -e' atau 'docker compose logs aegis'."
+  if [[ "${DEPLOY_MODE}" == "docker" ]]; then
+    # Frontend Next di :3000; /api/* di-proxy ke backend Express (:4000 internal).
+    ssh_run "curl -fsS http://127.0.0.1:3000/api/health" \
+      && log "OK — web + API merespons." \
+      || warn "Health check gagal. Lihat log: docker compose logs -f web aegis"
+  else
+    ssh_run "curl -fsS http://127.0.0.1:${PORT:-3000}/api/health" \
+      && log "OK — service merespons." \
+      || warn "Health check gagal. Lihat log: 'journalctl -u ${VPS_SERVICE_NAME} -e' atau 'docker compose logs aegis web'."
+  fi
 }
 
 main() {
