@@ -11,6 +11,22 @@ class SecurityAgent extends BaseAgent {
     async run() {
         this.log('Memulai pemindaian kode (SAST)...', '\x1b[33m');
         this.scan(this.targetDir);
+        
+        let reportContent = `# 🔍 AEGIS SECURITY REPORT - ${new Date().toLocaleString()}\n\n`;
+        if (this.findings.length > 0) {
+            this.findings.forEach(f => {
+                reportContent += `### ⚠ ${f.issue} (${f.severity})\n`;
+                reportContent += `- **File:** ${f.file}:${f.line}\n`;
+                reportContent += `- **Deskripsi:** ${f.description}\n`;
+                reportContent += `- **Kode:** \`${f.currentCode}\`\n\n`;
+            });
+        } else {
+            reportContent += `✅ Tidak ditemukan kerentanan keamanan kritis.\n`;
+        }
+
+        const reportPath = path.join(this.targetDir, 'docs/REPORT_SecurityCode.md');
+        await fs.outputFile(reportPath, reportContent);
+
         this.log(`Pemindaian selesai. Ditemukan ${this.findings.length} celah.`, this.findings.length > 0 ? '\x1b[31m' : '\x1b[32m');
         return this.findings;
     }

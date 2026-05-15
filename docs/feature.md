@@ -3,14 +3,14 @@
 Aegis adalah ekosistem otonom yang membagi tugas keamanan menjadi 5 fitur utama yang mudah dimengerti:
 
 ## 1. 🛡️ SecurityCode
-*Dulu: Security*
-- **Tugas:** Menganalisis kode sumber secara mendalam untuk menemukan celah keamanan (SAST).
-- **Output:** Daftar kerentanan kritis seperti Hardcoded Secrets dan SQL Injection.
+- **Tugas:** Menganalisis kode sumber (SAST).
+- **Output:** `docs/REPORT_SecurityCode.md` (Daftar celah keamanan).
+- **Mode:** Identifikasi celah berbahaya.
 
 ## 2. 🧪 QA
-*Dulu: Testing*
-- **Tugas:** Melakukan perbaikan kode secara otomatis (*Auto-Fix*) tanpa merusak logika aplikasi.
-- **Workflow:** Melakukan backup `.bak` secara otomatis sebelum melakukan "pembedahan" kode.
+- **Tugas:** Perbaikan kode otomatis (*Auto-Fix*).
+- **Output:** `docs/REPORT_QA.md` (Daftar file yang diperbaiki).
+- **Kontrol:** **WAJIB Konfirmasi Manusia** sebelum melakukan perubahan kode.
 
 ## 3. 💣 LocalPentest
 *Dulu: Pentest*

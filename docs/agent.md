@@ -4,9 +4,10 @@ Selamat datang di lingkungan kolaborasi Aegis. Dokumen ini adalah panduan wajib 
 
 ## 📜 Protokol Wajib (PENTING!)
 Sebelum mulai mengerjakan tugas apapun, setiap Agen **WAJIB**:
-1.  **Pelajari Seluruh Dokumentasi:** Baca `docs/plan.md`, `docs/feature.md`, dan `docs/agent.md` untuk memahami konteks dan tujuan fitur.
-2.  **Kirim Progres Berkala:** Setiap pembaruan harus dicatat di file `progres_[NamaModul].md` yang sesuai.
-3.  **Hanya Tambahkan (Append-Only):** Jangan pernah menghapus log lama. Tambahkan log baru di akhir file dengan timestamp yang jelas.
+1.  **Pelajari Seluruh Dokumentasi:** Baca `docs/plan.md`, `docs/feature.md`, dan `docs/agent.md` untuk memahami konteks.
+2.  **Mandatory REPORT.md:** Setiap Agen (kecuali Ask) **WAJIB** menghasilkan/memperbarui file `docs/REPORT_[NamaModul].md` setelah selesai bekerja.
+3.  **Human-in-the-loop (Konfirmasi):** Fitur otonom dilarang keras mengubah kode tanpa konfirmasi eksplisit dari pengguna di terminal.
+4.  **Kirim Progres Berkala:** Catat progres di file `progres_[NamaModul].md` (Append-Only).
 
 ---
 
